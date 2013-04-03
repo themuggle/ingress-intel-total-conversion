@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @id             iitc-plugin-player-tracker@breunigs
-// @name           IITC Plugin: Player tracker
+// @name           IITC Plugin: Player tracker with Speed-View
 // @version        0.9.2.@@DATETIMEVERSION@@
 // @namespace      https://github.com/jonatkins/ingress-intel-total-conversion
 // @updateURL      @@UPDATEURL@@
