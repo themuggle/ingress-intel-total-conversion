@@ -249,16 +249,16 @@ window.plugin.playerTracker.ago = function(time, now) {
   }
   return returnVal;
 }
-window.plugin.playerTracker.speed = function(ev1, ev2) {
-  var position = window.plugin.playerTracker.getLatLngFromEvent
-  var distance = position(ev1).distanceTo(position(ev2));
-  var deltatime = (ev2.time-ev1.time)/1000;
+//window.plugin.playerTracker.speed = function(ev1, ev2) {
+//  var position = window.plugin.playerTracker.getLatLngFromEvent
+//  var distance = position(ev1).distanceTo(position(ev2));
+//  var deltatime = (ev2.time-ev1.time)/1000;
   //probably consequence of the same attack
-  if (deltatime < 1 || distance < 100) return "(-)";
+//  if (deltatime < 1 || distance < 100) return "(-)";
   //convert m/s to km/h
   //perhaps add option to return mph (*2.23694)
-  return "(" + new Number(distance/deltatime*3.6).toFixed(1)+"km/h)";
-}
+//  return "(" + new Number(distance/deltatime*3.6).toFixed(1)+"km/h)";
+/}
 window.plugin.playerTracker.drawData = function() {
   var gllfe = plugin.playerTracker.getLatLngFromEvent;
   var layer = plugin.playerTracker.drawnTraces;
@@ -286,7 +286,7 @@ window.plugin.playerTracker.drawData = function() {
     var evtsLength = playerData.events.length;
     var last = playerData.events[evtsLength-1];
     var ago = plugin.playerTracker.ago;
-    var speed = plugin.playerTracker.speed;
+//    var speed = plugin.playerTracker.speed;
     var cssClass = playerData.team === 'ALIENS' ? 'enl' : 'res';
 // Level
     var players = {}; 
@@ -321,9 +321,10 @@ window.plugin.playerTracker.drawData = function() {
       title += '\n&nbsp;\nprevious locations:\n';
     for(var i = evtsLength - 2; i >= 0 && i >= evtsLength - 10; i--) {
       var ev = playerData.events[i];
-      var prevEv = playerData.events[i+1];
-      title += ago(ev.time, now) + minsAgo + window.chat.getChatPortalName(ev) + ' ' + speed(ev, prevEv) + '\n';
-    }
+ //     var prevEv = playerData.events[i+1];
+      title += ago(ev.time, now) + minsAgo + window.chat.getChatPortalName(ev) + '\n';
+ //     title += ago(ev.time, now) + minsAgo + window.chat.getChatPortalName(ev) + ' ' + speed(ev, prevEv) + '\n'; 
+ }
 
     // calculate the closest portal to the player
     var eventPortal = []
