@@ -341,7 +341,7 @@ window.plugin.playerTracker.drawData = function() {
         closestPortal = this;
       }
     });
-    var base = 'http://www.sios.at/ingress';
+    var base = 'https://raw.github.com/themuggle/ingress-intel-total-conversion/master/images/';
     L.Icon.Default.imagePath = base;
     if(window.plugin.guessPlayerLevels !== undefined &&
        window.plugin.guessPlayerLevels.fetchLevelByPlayer !== undefined) {
