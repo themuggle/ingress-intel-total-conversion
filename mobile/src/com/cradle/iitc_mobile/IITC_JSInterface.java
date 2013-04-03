@@ -21,8 +21,7 @@ public class IITC_JSInterface {
 	// send intent for gmaps link
 	@JavascriptInterface
 	public void intentPosLink(String s) {
-		Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-				Uri.parse(s));
+		Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(s));
 		context.startActivity(intent);
 	}
 
@@ -31,7 +30,7 @@ public class IITC_JSInterface {
 	public void copy(String s) {
 		ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
 		ClipData clip = ClipData.newPlainText("Copied Text ", s);
-			clipboard.setPrimaryClip(clip);
+		clipboard.setPrimaryClip(clip);
 		Toast.makeText(context, "copied to clipboard", Toast.LENGTH_SHORT).show();
 	}
 }
