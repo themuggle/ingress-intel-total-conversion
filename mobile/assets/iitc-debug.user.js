@@ -1,31 +1,11 @@
-// ==UserScript==
-// @id             ingress-intel-total-conversion@breunigs
-// @name           intel map total conversion
-// @version        0.8.1-2013-03-17-082031
-// @namespace      https://github.com/breunigs/ingress-intel-total-conversion
-// @updateURL      https://iitcserv.appspot.com/dist/total-conversion-build.user.js
-// @downloadURL    https://iitcserv.appspot.com/dist/total-conversion-build.user.js
-// @description    total conversion for the ingress intel map.
-// @include        http://www.ingress.com/intel*
-// @include        https://www.ingress.com/intel*
-// @match          http://www.ingress.com/intel*
-// @match          https://www.ingress.com/intel*
-// ==/UserScript==
-
-
-// REPLACE ORIG SITE ///////////////////////////////////////////////////
+﻿// REPLACE ORIG SITE ///////////////////////////////////////////////////
 if(document.getElementsByTagName('html')[0].getAttribute('itemscope') != null)
   throw('Ingress Intel Website is down, not a userscript issue.');
-window.iitcBuildDate = '2013-03-17-082031';
+window.iitcBuildDate = '2013-04-01-223509';
 
 // disable vanilla JS
 window.onload = function() {};
 
-if(window.location.protocol !== 'https:') {
-  var redir = window.location.href.replace(/^http:/, 'https:');
-  window.location = redir;
-  throw('Need to load HTTPS version.');
-}
 
 // rescue user data from original page
 var scr = document.getElementsByTagName('script');
@@ -63,12 +43,9 @@ for(var i = 0; i < d.length; i++) {
 // possible without requiring scripts.
 document.getElementsByTagName('head')[0].innerHTML = ''
   + '<title>Ingress Intel Map</title>'
-  + '<style>/* general rules ******************************************************/\n\nhtml, body, #map {\n  height: 100%;\n  width: 100%;\n  overflow: hidden; /* workaround for #373 */\n  background: #0e3d4e;\n}\n\nbody {\n  font-size: 14px;\n  font-family: "coda",arial,helvetica,sans-serif;\n  margin: 0;\n}\n\n#scrollwrapper {\n  overflow: hidden;\n  position: fixed;\n  right: -38px;\n  top: 0;\n  width: 340px;\n  bottom: 45px;\n  z-index: 1001;\n  pointer-events: none;\n}\n\n#sidebar {\n  background-color: rgba(8, 48, 78, 0.9);\n  border-left: 1px solid #20A8B1;\n  color: #888;\n  position: relative;\n  left: 0;\n  top: 0;\n  max-height: 100%;\n  overflow-y:scroll;\n  overflow-x:hidden;\n  z-index: 3000;\n  pointer-events: auto;\n}\n\n#sidebartoggle {\n  display: block;\n  padding: 20px 5px;\n  margin-top: -31px; /* -(toggle height / 2) */\n  line-height: 10px;\n  position: absolute;\n  top: 340px; /* (sidebar height / 2) */\n  z-index: 3001;\n  background-color: rgba(8, 48, 78, 0.9);\n  color: #FFCE00;\n  border: 1px solid #20A8B1;\n  border-right: none;\n  border-radius: 5px 0 0 5px;\n  text-decoration: none;\n  right: 301px; /* overwritten later by the script with SIDEBAR_WIDTH */\n}\n\n.enl {\n  color: #03fe03 !important;\n}\n\n.res {\n  color: #00c5ff !important;\n}\n\n.none {\n  color: #fff;\n}\n\na {\n  color: #ffce00;\n  cursor: pointer;\n  text-decoration: none;\n}\n\na:hover {\n  text-decoration: underline;\n}\n\n/* map display, required because GMaps uses a high z-index which is\n * normally above Leaflet’s vector pane */\n.leaflet-map-pane {\n  z-index: 1000;\n}\n\n.leaflet-control-layers-overlays label.disabled {\n  text-decoration: line-through;\n  cursor: help;\n}\n\n.help {\n  cursor: help;\n}\n\n.toggle {\n  display: block;\n  height: 0;\n  width: 0;\n}\n\n/* field mu count */\n.fieldmu {\n  color: #FFCE00;\n  font-size: 13px;\n  font-family: "coda",arial,helvetica,sans-serif; /*override leaflet-container */\n  text-align: center;\n  text-shadow: 0 0 0.2em black, 0 0 0.2em black, 0 0 0.2em black;\n  pointer-events: none;\n}\n\n\n/* chat ***************************************************************/\n\n#chatcontrols {\n  color: #FFCE00;\n  background: rgba(8, 48, 78, 0.9);\n  position: absolute;\n  left: 0;\n  z-index: 3001;\n  height: 26px;\n  padding-left:1px;\n}\n\n#chatcontrols.expand {\n  top: 0;\n  bottom: auto;\n}\n\n#chatcontrols a {\n  margin-left: -1px;\n  display: inline-block;\n  width: 94px;\n  text-align: center;\n  height: 24px;\n  line-height: 24px;\n  border: 1px solid #20A8B1;\n  vertical-align: top;\n}\n\n#chatcontrols a:first-child {\n  letter-spacing:-1px;\n  text-decoration: none !important;\n}\n\n#chatcontrols a.active {\n  border-color: #FFCE00;\n  border-bottom-width:0px;\n  font-weight:bold\n}\n\n#chatcontrols a.active + a {\n  border-left-color: #FFCE00\n}\n\n\n#chatcontrols .toggle {\n  border-left: 10px solid transparent;\n  border-right: 10px solid transparent;\n  margin: 6px auto auto;\n}\n\n#chatcontrols .expand {\n  border-bottom: 10px solid #FFCE00;\n}\n\n#chatcontrols .shrink {\n  border-top: 10px solid #FFCE00;\n}\n\n\n#chat {\n  position: absolute;\n  width: 708px;\n  bottom: 23px;\n  left: 0;\n  z-index: 3000;\n  background: rgba(8, 48, 78, 0.9);\n  font-size: 12.6px;\n  color: #eee;\n  border: 1px solid #20A8B1;\n  border-bottom: 0;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\nem {\n  color: red;\n  font-style: normal;\n}\n\n#chat.expand {\n  height:auto;\n  top: 25px;\n}\n\n#chatpublic, #chatfull, #chatcompact {\n  display: none;\n}\n\n#chat > div {\n  overflow-x:hidden;\n  overflow-y:scroll;\n  height: 100%;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  padding: 2px;\n  position:relative;\n}\n\n#chat table, #chatinput table {\n  width: 100%;\n  table-layout: fixed;\n  border-spacing: 0m;\n  border-collapse: collapse;\n}\n\n#chatinput table {\n  height: 100%;\n}\n\n#chat td, #chatinput td {\n  font-family: Verdana, sans-serif;\n  font-size: 12.6px;\n  vertical-align: top;\n  padding-bottom: 3px;\n}\n\n/* time */\n#chat td:first-child, #chatinput td:first-child {\n  width: 44px;\n  overflow: hidden;\n  padding-left: 2px;\n  color: #bbb;\n  white-space: nowrap;\n}\n\n#chat time {\n  cursor: help;\n}\n\n/* nick */\n#chat td:nth-child(2), #chatinput td:nth-child(2) {\n  width: 91px;\n  overflow: hidden;\n  padding-left: 2px;\n  white-space: nowrap;\n}\n\nmark {\n  background: transparent;\n}\n\n.invisep {\n  display: inline-block;\n  width: 1px;\n  height: 1px;\n  overflow:hidden;\n  color: transparent;\n}\n\n/* divider */\nsummary {\n  color: #bbb;\n  display: inline-block;\n  font-family: Verdana,sans-serif;\n  height: 16px;\n  overflow: hidden;\n  padding: 0 2px;\n  white-space: nowrap;\n  width: 100%;\n}\n\n#chatinput {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  padding: 0 2px;\n  background: rgba(8, 48, 78, 0.9);\n  width: 708px;\n  border: 1px solid #20A8B1;\n  z-index: 3001;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n#chatinput td {\n  padding-bottom: 1px;\n  vertical-align: middle;\n}\n\n\n#chatinput input {\n  background: transparent;\n  font-size: 12.6px;\n  font-family: Verdana,sans-serif;\n  color: #EEEEEE;\n  width: 100%;\n  height: 100%;\n}\n\n\n\n/* sidebar ************************************************************/\n\n#sidebar > * {\n  border-bottom: 1px solid #20A8B1;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n\n\n#sidebartoggle .toggle {\n  border-bottom: 10px solid transparent;\n  border-top: 10px solid transparent;\n}\n\n#sidebartoggle .open {\n  border-right: 10px solid #FFCE00;\n}\n\n#sidebartoggle .close {\n  border-left: 10px solid #FFCE00;\n}\n\n/* player stats */\n#playerstat {\n  height: 30px;\n}\n\nh2 {\n  color: #ffce00;\n  font-size: 21px;\n  padding: 0 4px;\n  margin: 0;\n  cursor:help;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  width: 100%;\n}\n\nh2 #name {\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: "~";\n  vertical-align: top;\n  white-space: nowrap;\n  width: 205px;\n  position: relative;\n}\n\nh2 #stats {\n  float: right;\n  height: 100%;\n  overflow: hidden;\n}\n\nh2 #signout {\n  font-size: 12px;\n  font-weight: normal;\n  line-height: 29px;\n  padding: 0 4px;\n  position: absolute;\n  top: 0;\n  right: 0;\n  background-color: rgba(8, 48, 78, 0.5);\n  display: none; /* starts hidden */\n}\n\nh2 sup, h2 sub {\n  display: block;\n  font-size: 11px;\n  margin-bottom: -1px;\n}\n\n\n/* gamestats */\n#gamestat {\n  height: 22px;\n}\n\n#gamestat span {\n  display: block;\n  float: left;\n  font-weight: bold;\n  cursor:help;\n  height: 21px;\n  line-height: 22px;\n}\n\n#gamestat .res {\n  background: #005684;\n  text-align: right;\n}\n\n#gamestat .enl {\n  background: #017f01;\n}\n\n\n/* geosearch input, and others */\ninput {\n  background-color: rgba(0, 0, 0, 0.3);\n  color: #ffce00;\n  height: 24px;\n  padding:3px 4px 1px 4px;\n  font-size: 14px;\n  border:0;\n  font-family:inherit;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n::-webkit-input-placeholder {\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  font-style: italic;\n}\n\n.leaflet-control-layers input {\n  height: auto;\n  padding: 0;\n}\n\n\n/* portal title and image */\nh3 {\n  font-size: 17px;\n  padding: 0 4px;\n  margin:0;\n  height: 25px;\n  width: 100%;\n  overflow:hidden;\n  text-overflow: "~";\n  white-space: nowrap;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n.imgpreview {\n  height: 200px;\n  background: no-repeat center center;\n  background-size: contain;\n  cursor: help;\n  overflow: hidden;\n}\n\n.imgpreview img.hide {\n  display: none;\n}\n\n#level {\n  font-size: 40px;\n  text-shadow: -1px -1px #000, 1px -1px #000, -1px 1px #000, 1px 1px #000, 0 0 5px #fff;\n  display: block;\n  margin-right: 15px;\n  text-align:right;\n}\n\n/* portal mods */\n.mods {\n  margin: 5px auto 1px auto;\n  padding: 0 2px;\n  width: 296px;\n  height: 75px;\n  text-align: center;\n}\n\n.mods span {\n  background-color: rgba(0, 0, 0, 0.3);\n  /* can’t use inline-block because Webkit’s implementation is buggy and\n   * introduces additional margins in random cases. No clear necessary,\n   * as that’s solved by setting height on .mods. */\n  display: block;\n  float:left;\n  height: 63px;\n  margin: 0 2px;\n  overflow: hidden;\n  padding: 2px;\n  text-align: center;\n  width: 63px;\n  cursor:help;\n  border: 1px solid #666;\n}\n\n.mods span:not([title]) {\n  cursor: auto;\n}\n\n.res .mods span, .res .meter {\n  border: 1px solid #0076b6;\n}\n.enl .mods span, .enl .meter {\n  border: 1px solid #017f01;\n}\n\n/* random details, resonator details */\n#randdetails, #resodetails {\n  width: 100%;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  padding: 0 4px;\n  table-layout: fixed;\n  border-spacing: 0m;\n  border-collapse: collapse;\n}\n\n#randdetails td, #resodetails td {\n  overflow: hidden;\n  text-overflow: "~";\n  vertical-align: top;\n  white-space: nowrap;\n  width: 50%;\n  width: calc(50% - 62px);\n}\n\n#randdetails th, #resodetails th {\n  font-weight: normal;\n  text-align: right;\n  width: 62px;\n  padding-right:4px;\n  padding-left:4px;\n}\n\n#randdetails th + th, #resodetails th + th {\n  text-align: left;\n  padding-right: 4px;\n  padding-left: 4px;\n}\n\n#randdetails td:first-child, #resodetails td:first-child {\n  text-align: right;\n  padding-left: 2px;\n}\n\n#randdetails td:last-child, #resodetails td:last-child {\n  text-align: left;\n  padding-right: 2px;\n}\n\n\n#randdetails {\n  margin-top: 9px;\n  margin-bottom: 9px;\n}\n\n\n#randdetails tt {\n  font-family: inherit;\n  cursor: help;\n}\n\n/* resonators */\n#resodetails {\n  margin-bottom: 9px;\n}\n\n.meter {\n  background: #000;\n  cursor: help;\n  display: inline-block;\n  height: 18px;\n  padding: 1px;\n  width: 100%;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  position: relative;\n  left: 0;\n  top: 0;\n}\n\n.meter span {\n  display: block;\n  height: 14px;\n}\n\n.meter-level {\n  position: absolute;\n  top: -2px;\n  left: 50%;\n  margin-left: -6px;\n  text-shadow: 0.0em 0.0em 0.3em #808080;\n}\n/* links below resos */\n\n.linkdetails {\n  margin-bottom: 8px;\n}\n\naside {\n  display: inline-block;\n  padding-right: 9px;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  text-align: center;\n}\n\n.linkdetails aside:last-child {\n  padding-right: 0;\n}\n\n.linkdetails aside:nth-child(1) {\n  text-align: right;\n  width:88px;\n}\n\n.linkdetails aside:nth-child(2) {\n  text-align: right;\n  width:67px;\n}\n\n.linkdetails aside:nth-child(4) {\n  margin-left:13px;\n}\n\n#toolbox {\n  padding: 4px 2px;\n  font-size:90%;\n}\n\n#toolbox > a {\n  padding: 4px;\n}\n\n/* a common portal display takes this much space (prevents moving\n * content when first selecting a portal) */\n\n#portaldetails {\n  min-height: 553px;\n}\n\n\n/* update status */\n#updatestatus {\n  background-color: rgba(8, 48, 78, 0.9);\n  border-bottom: 0;\n  border-top: 1px solid #20A8B1;\n  border-left: 1px solid #20A8B1;\n  bottom: 0;\n  color: #ffce00;\n  font-size:13px;\n  padding: 4px;\n  position: fixed;\n  right: 0;\n  z-index:3002;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n\n/* preview */\n\n#largepreview {\n  left: 50%;\n  position: fixed;\n  top: 50%;\n  z-index: 2000;\n}\n#largepreview img {\n  box-shadow: 0 0 40px #000;\n}\n#largepreview img {\n  border: 2px solid #f8ff5e;\n}\n\n/* tooltips, dialogs */\n.ui-tooltip, .ui-dialog {\n  max-width: 300px;\n  position: absolute;\n  z-index: 9999;\n  background-color: rgba(8, 48, 78, 0.9);\n  border: 1px solid #20A8B1;\n  color: #eee;\n  font: 13px/15px "Helvetica Neue", Arial, Helvetica, sans-serif;\n  padding: 2px 4px;\n}\n\n.ui-tooltip, .ui-dialog a {\n  color: #FFCE00;\n}\n\n.ui-dialog {\n  padding: 0;\n  border-radius: 2px;\n}\n\n.ui-widget-overlay {\n  height: 100%;\n  left: 0;\n  position: fixed;\n  top: 0;\n  width: 100%;\n  z-index:9998;\n  background:  #444;\n  opacity: 0.6;\n}\n\n.ui-dialog-titlebar {\n  display: none;\n}\n\n.ui-dialog-content {\n  padding: 12px;\n  overflow-y: auto;\n  overflow-x: hidden;\n  max-height: 600px !important;\n  max-width: 700px !important;\n}\n\n.ui-dialog-buttonpane {\n  padding: 12px;\n  border-top: 1px solid #20A8B1;\n}\n\n.ui-dialog-buttonset {\n  text-align: right;\n}\n\n.ui-dialog-buttonset button,\n.ui-dialog-content button {\n  padding: 2px;\n  min-width: 80px;\n  color: #FFCE00;\n  border: 1px solid #FFCE00;\n  background-color: rgba(8, 48, 78, 0.9);\n}\n\n.ui-dialog-buttonset button:hover {\n  text-decoration: underline;\n}\n\ntd {\n  padding: 0;\n  vertical-align: top;\n}\n\ntd + td {\n  padding-left: 4px;\n}\n\n/* redeem results *****************************************************/\n.redeem-result {\n  font-size: 14px;\n  font-family: arial,helvetica,sans-serif;\n  table-layout: fixed;\n}\n\n.redeem-result tr > td:first-child {\n  width: 50px;\n  text-align: right;\n}\n</style>'
+  + '<style>/* general rules ******************************************************/\n\nhtml, body, #map {\n  height: 100%;\n  width: 100%;\n  overflow: hidden; /* workaround for #373 */\n  background: #0e3d4e;\n}\n\nbody {\n  font-size: 14px;\n  font-family: "coda",arial,helvetica,sans-serif;\n  margin: 0;\n}\n\n#scrollwrapper {\n  overflow-x: hidden;\n  overflow-y: auto;\n  position: fixed;\n  right: -38px;\n  top: 0;\n  width: 340px;\n  bottom: 45px;\n  z-index: 1001;\n  pointer-events: none;\n}\n\n#sidebar {\n  background-color: rgba(8, 48, 78, 0.9);\n  border-left: 1px solid #20A8B1;\n  color: #888;\n  position: relative;\n  left: 0;\n  top: 0;\n  max-height: 100%;\n  overflow-y:scroll;\n  overflow-x:hidden;\n  z-index: 3000;\n  pointer-events: auto;\n}\n\n#sidebartoggle {\n  display: block;\n  padding: 20px 5px;\n  margin-top: -31px; /* -(toggle height / 2) */\n  line-height: 10px;\n  position: absolute;\n  top: 340px; /* (sidebar height / 2) */\n  z-index: 3001;\n  background-color: rgba(8, 48, 78, 0.9);\n  color: #FFCE00;\n  border: 1px solid #20A8B1;\n  border-right: none;\n  border-radius: 5px 0 0 5px;\n  text-decoration: none;\n  right: 301px; /* overwritten later by the script with SIDEBAR_WIDTH */\n}\n\n.enl {\n  color: #03fe03 !important;\n}\n\n.res {\n  color: #00c5ff !important;\n}\n\n.none {\n  color: #fff;\n}\n\na {\n  color: #ffce00;\n  cursor: pointer;\n  text-decoration: none;\n}\n\na:hover {\n  text-decoration: underline;\n}\n\n/* map display, required because GMaps uses a high z-index which is\n * normally above Leaflet’s vector pane */\n.leaflet-map-pane {\n  z-index: 1000;\n}\n\n.leaflet-control-layers-overlays label.disabled {\n  text-decoration: line-through;\n  cursor: help;\n}\n\n.help {\n  cursor: help;\n}\n\n.toggle {\n  display: block;\n  height: 0;\n  width: 0;\n}\n\n/* field mu count */\n.fieldmu {\n  color: #FFCE00;\n  font-size: 13px;\n  font-family: "coda",arial,helvetica,sans-serif; /*override leaflet-container */\n  text-align: center;\n  text-shadow: 0 0 0.2em black, 0 0 0.2em black, 0 0 0.2em black;\n  pointer-events: none;\n}\n\n\n/* chat ***************************************************************/\n\n#chatcontrols {\n  color: #FFCE00;\n  background: rgba(8, 48, 78, 0.9);\n  position: absolute;\n  left: 0;\n  z-index: 3001;\n  height: 26px;\n  padding-left:1px;\n}\n\n#chatcontrols.expand {\n  top: 0;\n  bottom: auto;\n}\n\n#chatcontrols a {\n  margin-left: -1px;\n  display: inline-block;\n  width: 94px;\n  text-align: center;\n  height: 24px;\n  line-height: 24px;\n  border: 1px solid #20A8B1;\n  vertical-align: top;\n}\n\n#chatcontrols a:first-child {\n  letter-spacing:-1px;\n  text-decoration: none !important;\n}\n\n#chatcontrols a.active {\n  border-color: #FFCE00;\n  border-bottom-width:0px;\n  font-weight:bold\n}\n\n#chatcontrols a.active + a {\n  border-left-color: #FFCE00\n}\n\n\n#chatcontrols .toggle {\n  border-left: 10px solid transparent;\n  border-right: 10px solid transparent;\n  margin: 6px auto auto;\n}\n\n#chatcontrols .expand {\n  border-bottom: 10px solid #FFCE00;\n}\n\n#chatcontrols .shrink {\n  border-top: 10px solid #FFCE00;\n}\n\n\n#chat {\n  position: absolute;\n  width: 708px;\n  bottom: 23px;\n  left: 0;\n  z-index: 3000;\n  background: rgba(8, 48, 78, 0.9);\n  font-size: 12.6px;\n  color: #eee;\n  border: 1px solid #20A8B1;\n  border-bottom: 0;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\nem {\n  color: red;\n  font-style: normal;\n}\n\n#chat.expand {\n  height:auto;\n  top: 25px;\n}\n\n#chatpublic, #chatfull, #chatcompact {\n  display: none;\n}\n\n#chat > div {\n  overflow-x:hidden;\n  overflow-y:scroll;\n  height: 100%;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  padding: 2px;\n  position:relative;\n}\n\n#chat table, #chatinput table {\n  width: 100%;\n  table-layout: fixed;\n  border-spacing: 0m;\n  border-collapse: collapse;\n}\n\n#chatinput table {\n  height: 100%;\n}\n\n#chat td, #chatinput td {\n  font-family: Verdana, sans-serif;\n  font-size: 12.6px;\n  vertical-align: top;\n  padding-bottom: 3px;\n}\n\n/* time */\n#chat td:first-child, #chatinput td:first-child {\n  width: 44px;\n  overflow: hidden;\n  padding-left: 2px;\n  color: #bbb;\n  white-space: nowrap;\n}\n\n#chat time {\n  cursor: help;\n}\n\n/* nick */\n#chat td:nth-child(2), #chatinput td:nth-child(2) {\n  width: 91px;\n  overflow: hidden;\n  padding-left: 2px;\n  white-space: nowrap;\n}\n\nmark {\n  background: transparent;\n}\n\n.invisep {\n  display: inline-block;\n  width: 1px;\n  height: 1px;\n  overflow:hidden;\n  color: transparent;\n}\n\n/* divider */\nsummary {\n  color: #bbb;\n  display: inline-block;\n  font-family: Verdana,sans-serif;\n  height: 16px;\n  overflow: hidden;\n  padding: 0 2px;\n  white-space: nowrap;\n  width: 100%;\n}\n\n#chatinput {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  padding: 0 2px;\n  background: rgba(8, 48, 78, 0.9);\n  width: 708px;\n  border: 1px solid #20A8B1;\n  z-index: 3001;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n#chatinput td {\n  padding-bottom: 1px;\n  vertical-align: middle;\n}\n\n\n#chatinput input {\n  background: transparent;\n  font-size: 12.6px;\n  font-family: Verdana,sans-serif;\n  color: #EEEEEE;\n  width: 100%;\n  height: 100%;\n  padding:3px 4px 1px 4px;\n}\n\n\n\n/* sidebar ************************************************************/\n\n#sidebar > * {\n  border-bottom: 1px solid #20A8B1;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n\n\n#sidebartoggle .toggle {\n  border-bottom: 10px solid transparent;\n  border-top: 10px solid transparent;\n}\n\n#sidebartoggle .open {\n  border-right: 10px solid #FFCE00;\n}\n\n#sidebartoggle .close {\n  border-left: 10px solid #FFCE00;\n}\n\n/* player stats */\n#playerstat {\n  height: 30px;\n}\n\nh2 {\n  color: #ffce00;\n  font-size: 21px;\n  padding: 0 4px;\n  margin: 0;\n  cursor:help;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  width: 100%;\n}\n\nh2 #name {\n  display: inline-block;\n  overflow: hidden;\n  text-overflow: "~";\n  vertical-align: top;\n  white-space: nowrap;\n  width: 205px;\n  position: relative;\n}\n\nh2 #stats {\n  float: right;\n  height: 100%;\n  overflow: hidden;\n}\n\nh2 #signout {\n  font-size: 12px;\n  font-weight: normal;\n  line-height: 29px;\n  padding: 0 4px;\n  position: absolute;\n  top: 0;\n  right: 0;\n  background-color: rgba(8, 48, 78, 0.5);\n  display: none; /* starts hidden */\n}\n\nh2 sup, h2 sub {\n  display: block;\n  font-size: 11px;\n  margin-bottom: -2px;\n}\n\n\n/* gamestats */\n#gamestat {\n  height: 22px;\n}\n\n#gamestat span {\n  display: block;\n  float: left;\n  font-weight: bold;\n  cursor:help;\n  height: 21px;\n  line-height: 22px;\n}\n\n#gamestat .res {\n  background: #005684;\n  text-align: right;\n}\n\n#gamestat .enl {\n  background: #017f01;\n}\n\n\n/* geosearch input, and others */\ninput {\n  background-color: rgba(0, 0, 0, 0.3);\n  color: #ffce00;\n  height: 24px;\n  padding:0px 4px 0px 4px;\n  font-size: 12px;\n  border:0;\n  font-family:inherit;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n::-webkit-input-placeholder {\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  font-style: italic;\n}\n\n.leaflet-control-layers input {\n  height: auto;\n  padding: 0;\n}\n\n\n/* portal title and image */\nh3 {\n  font-size: 16px;\n  padding: 0 4px;\n  margin:0;\n  height: 23px;\n  width: 100%;\n  overflow:hidden;\n  text-overflow: "~";\n  white-space: nowrap;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n.imgpreview {\n  height: 190px;\n  background: no-repeat center center;\n  background-size: contain;\n  cursor: help;\n  overflow: hidden;\n}\n\n.imgpreview img.hide {\n  display: none;\n}\n\n#level {\n  font-size: 40px;\n  text-shadow: -1px -1px #000, 1px -1px #000, -1px 1px #000, 1px 1px #000, 0 0 5px #fff;\n  display: block;\n  margin-right: 15px;\n  text-align:right;\n}\n\n/* portal mods */\n.mods {\n  margin: 3px auto 1px auto;\n  width: 296px;\n  height: 67px;\n  text-align: center;\n}\n\n.mods span {\n  background-color: rgba(0, 0, 0, 0.3);\n  /* can’t use inline-block because Webkit’s implementation is buggy and\n   * introduces additional margins in random cases. No clear necessary,\n   * as that’s solved by setting height on .mods. */\n  display: block;\n  float:left;\n  height: 63px;\n  margin: 0 2px;\n  overflow: hidden;\n  padding: 2px;\n  text-align: center;\n  width: 63px;\n  cursor:help;\n  border: 1px solid #666;\n}\n\n.mods span:not([title]) {\n  cursor: auto;\n}\n\n.res .mods span, .res .meter {\n  border: 1px solid #0076b6;\n}\n.enl .mods span, .enl .meter {\n  border: 1px solid #017f01;\n}\n\n/* random details, resonator details */\n#randdetails, #resodetails {\n  width: 100%;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  padding: 0 4px;\n  table-layout: fixed;\n  border-spacing: 0m;\n  border-collapse: collapse;\n}\n\n#randdetails td, #resodetails td {\n  overflow: hidden;\n  text-overflow: "~";\n  vertical-align: top;\n  white-space: nowrap;\n  width: 50%;\n  width: calc(50% - 62px);\n}\n\n#randdetails th, #resodetails th {\n  font-weight: normal;\n  text-align: right;\n  width: 62px;\n  padding:0px;\n  padding-right:4px;\n  padding-left:4px;\n}\n\n#randdetails th + th, #resodetails th + th {\n  text-align: left;\n  padding-right: 4px;\n  padding-left: 4px;\n}\n\n#randdetails td:first-child, #resodetails td:first-child {\n  text-align: right;\n  padding-left: 2px;\n}\n\n#randdetails td:last-child, #resodetails td:last-child {\n  text-align: left;\n  padding-right: 2px;\n}\n\n\n#randdetails {\n  margin-top: 4px;\n  margin-bottom: 5px;\n}\n\n\n#randdetails tt {\n  font-family: inherit;\n  cursor: help;\n}\n\n/* resonators */\n#resodetails {\n  margin-bottom: 0px;\n}\n\n.meter {\n  background: #000;\n  cursor: help;\n  display: inline-block;\n  height: 18px;\n  padding: 1px;\n  width: 100%;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  position: relative;\n  left: 0;\n  top: 0;\n}\n\n.meter span {\n  display: block;\n  height: 14px;\n}\n\n.meter-level {\n  position: absolute;\n  top: -2px;\n  left: 50%;\n  margin-left: -6px;\n  text-shadow: 0.0em 0.0em 0.3em #808080;\n}\n/* links below resos */\n\n.linkdetails {\n  margin-bottom: 0px;\n}\n\naside {\n  display: inline-block;\n  padding-right: 9px;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n  text-align: center;\n}\n\n.linkdetails aside a{\n  font-size:12px;\n}\n\n.linkdetails aside:last-child {\n  padding-right: 0;\n}\n\n.linkdetails aside:nth-child(1) {\n  text-align: right;\n  width:88px;\n}\n\n.linkdetails aside:nth-child(2) {\n  text-align: right;\n  width:67px;\n}\n\n.linkdetails aside:nth-child(4) {\n  margin-left:13px;\n}\n\n#toolbox {\n  padding: 2px;\n  font-size:90%;\n}\n\n#toolbox > a {\n  padding: 2px;\n  padding-right:6px;\n}\n\n/* a common portal display takes this much space (prevents moving\n * content when first selecting a portal) */\n\n#portaldetails {\n  min-height: 495px;\n}\n\n\n/* update status */\n#updatestatus {\n  background-color: rgba(8, 48, 78, 0.9);\n  border-bottom: 0;\n  border-top: 1px solid #20A8B1;\n  border-left: 1px solid #20A8B1;\n  bottom: 0;\n  color: #ffce00;\n  font-size:13px;\n  padding: 4px;\n  position: fixed;\n  right: 0;\n  z-index:3002;\n  -webkit-box-sizing: border-box;\n  -moz-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n\n/* preview */\n\n#largepreview {\n  left: 50%;\n  position: fixed;\n  top: 50%;\n  z-index: 2000;\n}\n#largepreview img {\n  box-shadow: 0 0 40px #000;\n}\n#largepreview img {\n  border: 2px solid #f8ff5e;\n}\n\n/* tooltips, dialogs */\n.ui-tooltip, .ui-dialog {\n  max-width: 300px;\n  position: absolute;\n  z-index: 9999;\n  background-color: rgba(8, 48, 78, 0.9);\n  border: 1px solid #20A8B1;\n  color: #eee;\n  font: 13px/15px "Helvetica Neue", Arial, Helvetica, sans-serif;\n  padding: 2px 4px;\n}\n\n.ui-tooltip, .ui-dialog a {\n  color: #FFCE00;\n}\n\n.ui-dialog {\n  padding: 0;\n  border-radius: 2px;\n}\n\n.ui-widget-overlay {\n  height: 100%;\n  left: 0;\n  position: fixed;\n  top: 0;\n  width: 100%;\n  z-index:9998;\n  background:  #444;\n  opacity: 0.6;\n}\n\n.ui-dialog-titlebar {\n  display: none;\n}\n\n.ui-dialog-content {\n  padding: 12px;\n  overflow-y: auto;\n  overflow-x: hidden;\n  max-height: 600px !important;\n  max-width: 700px !important;\n}\n\n.ui-dialog-buttonpane {\n  padding: 12px;\n  border-top: 1px solid #20A8B1;\n}\n\n.ui-dialog-buttonset {\n  text-align: right;\n}\n\n.ui-dialog-buttonset button,\n.ui-dialog-content button {\n  padding: 2px;\n  min-width: 80px;\n  color: #FFCE00;\n  border: 1px solid #FFCE00;\n  background-color: rgba(8, 48, 78, 0.9);\n}\n\n.ui-dialog-buttonset button:hover {\n  text-decoration: underline;\n}\n\ntd {\n  padding: 0;\n  vertical-align: top;\n}\n\ntd + td {\n  padding-left: 4px;\n}\n\n#qrcode > canvas {\n  border: 8px solid white;\n} \n\n/* redeem results *****************************************************/\n.redeem-result {\n  font-size: 14px;\n  font-family: arial,helvetica,sans-serif;\n  table-layout: fixed;\n}\n\n.redeem-result tr > td:first-child {\n  width: 50px;\n  text-align: right;\n}\n\n.pl_nudge_date {\n  background-color: #724510;\n  border-left: 1px solid #ffd652;\n  border-bottom: 1px solid #ffd652;\n  border-top: 1px solid #ffd652;\n  color: #ffd652;\n  display: inline-block;\n  float: left;\n  font-size: 12px;\n  height: 18px;\n  text-align: center;\n}\n\n.pl_nudge_pointy_spacer {\n  background: no-repeat url(//commondatastorage.googleapis.com/ingress.com/img/nudge_pointy.png);\n  display: inline-block;\n  float: left;\n  height: 20px;\n  left: 47px;\n  width: 5px;\n}\n\n.pl_nudge_player {\n  cursor: pointer;\n}\n\n.pl_nudge_me {\n  color: #ffd652;\n}\n\n.RESISTANCE {\n  color: #00c2ff;\n}\n\n.ALIENS {\n  color: #28f428;\n}\n</style>'
   + '<style>/* required styles */\n\n.leaflet-map-pane,\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow,\n.leaflet-tile-pane,\n.leaflet-overlay-pane,\n.leaflet-shadow-pane,\n.leaflet-marker-pane,\n.leaflet-popup-pane,\n.leaflet-overlay-pane svg,\n.leaflet-zoom-box,\n.leaflet-image-layer,\n.leaflet-layer {\n	position: absolute;\n	left: 0;\n	top: 0;\n	}\n.leaflet-container {\n	overflow: hidden;\n	-ms-touch-action: none;\n	}\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n	-webkit-user-select: none;\n	   -moz-user-select: none;\n	        user-select: none;\n	}\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n	display: block;\n	}\n/* map is broken in FF if you have max-width: 100% on tiles */\n.leaflet-container img {\n	max-width: none !important;\n	}\n/* stupid Android 2 doesn\'t understand "max-width: none" properly */\n.leaflet-container img.leaflet-image-layer {\n	max-width: 15000px !important;\n	}\n.leaflet-tile {\n	filter: inherit;\n	visibility: hidden;\n	}\n.leaflet-tile-loaded {\n	visibility: inherit;\n	}\n.leaflet-zoom-box {\n	width: 0;\n	height: 0;\n	}\n\n.leaflet-tile-pane    { z-index: 2; }\n.leaflet-objects-pane { z-index: 3; }\n.leaflet-overlay-pane { z-index: 4; }\n.leaflet-shadow-pane  { z-index: 5; }\n.leaflet-marker-pane  { z-index: 6; }\n.leaflet-popup-pane   { z-index: 7; }\n\n\n/* control positioning */\n\n.leaflet-control {\n	position: relative;\n	z-index: 7;\n	pointer-events: auto;\n	}\n.leaflet-top,\n.leaflet-bottom {\n	position: absolute;\n	z-index: 1000;\n	pointer-events: none;\n	}\n.leaflet-top {\n	top: 0;\n	}\n.leaflet-right {\n	right: 0;\n	}\n.leaflet-bottom {\n	bottom: 0;\n	}\n.leaflet-left {\n	left: 0;\n	}\n.leaflet-control {\n	float: left;\n	clear: both;\n	}\n.leaflet-right .leaflet-control {\n	float: right;\n	}\n.leaflet-top .leaflet-control {\n	margin-top: 10px;\n	}\n.leaflet-bottom .leaflet-control {\n	margin-bottom: 10px;\n	}\n.leaflet-left .leaflet-control {\n	margin-left: 10px;\n	}\n.leaflet-right .leaflet-control {\n	margin-right: 10px;\n	}\n\n\n/* zoom and fade animations */\n\n.leaflet-fade-anim .leaflet-tile,\n.leaflet-fade-anim .leaflet-popup {\n	opacity: 0;\n	-webkit-transition: opacity 0.2s linear;\n	   -moz-transition: opacity 0.2s linear;\n	     -o-transition: opacity 0.2s linear;\n	        transition: opacity 0.2s linear;\n	}\n.leaflet-fade-anim .leaflet-tile-loaded,\n.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\n	opacity: 1;\n	}\n\n.leaflet-zoom-anim .leaflet-zoom-animated {\n	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);\n	     -o-transition:      -o-transform 0.25s cubic-bezier(0,0,0.25,1);\n	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);\n	}\n.leaflet-zoom-anim .leaflet-tile,\n.leaflet-pan-anim .leaflet-tile,\n.leaflet-touching .leaflet-zoom-animated {\n	-webkit-transition: none;\n	   -moz-transition: none;\n	     -o-transition: none;\n	        transition: none;\n	}\n\n.leaflet-zoom-anim .leaflet-zoom-hide {\n	visibility: hidden;\n	}\n\n\n/* cursors */\n\n.leaflet-clickable {\n	cursor: pointer;\n	}\n.leaflet-container {\n	cursor: -webkit-grab;\n	cursor:    -moz-grab;\n	}\n.leaflet-popup-pane,\n.leaflet-control {\n	cursor: auto;\n	}\n.leaflet-dragging,\n.leaflet-dragging .leaflet-clickable,\n.leaflet-dragging .leaflet-container {\n	cursor: move;\n	cursor: -webkit-grabbing;\n	cursor:    -moz-grabbing;\n	}\n\n\n/* visual tweaks */\n\n.leaflet-container {\n	background: #ddd;\n	outline: 0;\n	}\n.leaflet-container a {\n	color: #0078A8;\n	}\n.leaflet-container a.leaflet-active {\n	outline: 2px solid orange;\n	}\n.leaflet-zoom-box {\n	border: 2px dotted #05f;\n	background: white;\n	opacity: 0.5;\n	}\n\n\n/* general typography */\n.leaflet-container {\n	font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;\n	}\n\n\n/* general toolbar styles */\n\n.leaflet-bar {\n	box-shadow: 0 0 8px rgba(0,0,0,0.4);\n	border: 1px solid #888;\n	-webkit-border-radius: 5px;\n	        border-radius: 5px;\n	}\n.leaflet-bar-part {\n	background-color: rgba(255, 255, 255, 0.8);\n	border-bottom: 1px solid #aaa;\n	}\n.leaflet-bar-part-top {\n	-webkit-border-radius: 4px 4px 0 0;\n	        border-radius: 4px 4px 0 0;\n	}\n.leaflet-bar-part-bottom {\n	-webkit-border-radius: 0 0 4px 4px;\n	        border-radius: 0 0 4px 4px;\n	border-bottom: none;\n	}\n\n.leaflet-touch .leaflet-bar {\n	-webkit-border-radius: 10px;\n	        border-radius: 10px;\n	}\n.leaflet-touch .leaflet-bar-part {\n	border-bottom: 4px solid rgba(0,0,0,0.3);\n	}\n.leaflet-touch .leaflet-bar-part-top {\n	-webkit-border-radius: 7px 7px 0 0;\n	        border-radius: 7px 7px 0 0;\n	}\n.leaflet-touch .leaflet-bar-part-bottom {\n	-webkit-border-radius: 0 0 7px 7px;\n	        border-radius: 0 0 7px 7px;\n	border-bottom: none;\n	}\n\n\n/* zoom control */\n\n.leaflet-container .leaflet-control-zoom {\n	margin-left: 13px;\n	margin-top: 12px;\n	}\n.leaflet-control-zoom a {\n	width: 22px;\n	height: 22px;\n	text-align: center;\n	text-decoration: none;\n	color: black;\n	}\n.leaflet-control-zoom a,\n.leaflet-control-layers-toggle {\n	background-position: 50% 50%;\n	background-repeat: no-repeat;\n	display: block;\n	}\n.leaflet-control-zoom a:hover {\n	background-color: #fff;\n	color: #777;\n	}\n.leaflet-control-zoom-in {\n	font: bold 18px/24px Arial, Helvetica, sans-serif;\n	}\n.leaflet-control-zoom-out {\n	font: bold 23px/20px Tahoma, Verdana, sans-serif;\n	}\n.leaflet-control-zoom a.leaflet-control-zoom-disabled {\n	cursor: default;\n	background-color: rgba(255, 255, 255, 0.8);\n	color: #bbb;\n	}\n\n.leaflet-touch .leaflet-control-zoom a {\n	width: 30px;\n	height: 30px;\n	}\n.leaflet-touch .leaflet-control-zoom-in {\n	font-size: 24px;\n	line-height: 29px;\n	}\n.leaflet-touch .leaflet-control-zoom-out {\n	font-size: 28px;\n	line-height: 24px;\n	}\n\n/* layers control */\n\n.leaflet-control-layers {\n	box-shadow: 0 1px 7px rgba(0,0,0,0.4);\n	background: #f8f8f9;\n	-webkit-border-radius: 8px;\n	        border-radius: 8px;\n	}\n.leaflet-control-layers-toggle {\n	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAMAAACelLz8AAABrVBMVEUNDQ0PDw8QEBARERESEhIUFBQVFRUYGBgZGRkcHBwdHR0fHx8jIyMoKCgxMTE0NDQ1NTU2NjY4ODg5OTk6Ojo7Ozs+Pj4/Pz9AQEBBQUFDQ0NFRUVISEhMTExNTU1ZWVlaWlpmZmb///+rq6u1tbWHh4eOjo6oqKiampqdnZ2wsLC5ubmEhISLi4uZmZmSkpK1tbV6enqCgoKpqamJiYmurq66urp4eHh/f3+1tbXAwMBubm52dnacnJyEhISAgIBvb2+wsLC9vb15eXleXl5fX19mZmZoaGhsbGxtbW1ubm5vb29xcXF8fHx9fX1+fn6CgoKDg4OFhYWGhoaKioqNjY2Tk5OUlJSVlZWXl5eYmJibm5uenp6fn5+goKChoaGioqKpqamqqqqsrKyurq6vr6+xsbGzs7O0tLS1tbW2tra4uLi6urq9vb2+vr6/v7/BwcHDw8PExMTFxcXHx8fJycnKysrLy8vMzMzOzs7Pz8/Q0NDS0tLT09PV1dXW1tbX19fZ2dna2trb29vc3Nzd3d3f39/i4uLk5OTn5+fo6Ojt7e3u7u7z8/P09PRxWspKAAAARHRSTlMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABISFxcXKC1DQ0hISE2IjIyMkMTEx8nr6+zs7O74+/v7/ChuOn8AAAGLSURBVCjPbZJLT8JAEIBnW1re3VKoETloSLjKzXhS4w836smQcCAaXyQEYxBJoXRLeW1p192GIoh7aabfzs63O4OqEC8/gYGsViyO0S9K42u4Id4GbpBkXJYU8Id3Nl2GO0gzrtIS/4bzW9uhS7ZBKXxRkFG0hwXjezKZByxCinZeSoqUAGSRuBw+2N6CcVTQzjQBGJUgVEVu6DbcgYdOcb0gYrZgCkc+SomAjlsE1XHZ1CWgVI2KsYCqKoSO1Sf8QAMf6khW0FqD+QFzvsmbqAXJgyw2FPEbBPZtMh18srXGqs0KGSngteRwNka1RMN9glij01dzXIAtPFqu/tGY9rxcBmZerpLd15h8+KAc59caTdjR+IKjWOM1esNYQ47kg7VGc0sjiRWu4ZPlXw3w25NII1/jR29pFLP8rqRLQT3B/ObTUayRMMyiLjR6UBEazsiy3+NWZrGpR40RDXEs8rg9ALpm6tFrOJb7vDsbIBtmTgPXs+wu2xu2DM7DhLyE/8xhR6pDawMAfgAd2djeY/eg2wAAAABJRU5ErkJggg==);\n	width: 36px;\n	height: 36px;\n	}\n.leaflet-touch .leaflet-control-layers-toggle {\n	width: 44px;\n	height: 44px;\n	}\n.leaflet-control-layers .leaflet-control-layers-list,\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\n	display: none;\n	}\n.leaflet-control-layers-expanded .leaflet-control-layers-list {\n	display: block;\n	position: relative;\n	}\n.leaflet-control-layers-expanded {\n	padding: 6px 10px 6px 6px;\n	color: #333;\n	background: #fff;\n	}\n.leaflet-control-layers-selector {\n	margin-top: 2px;\n	position: relative;\n	top: 1px;\n	}\n.leaflet-control-layers label {\n	display: block;\n	}\n.leaflet-control-layers-separator {\n	height: 0;\n	border-top: 1px solid #ddd;\n	margin: 5px -10px 5px -6px;\n	}\n\n\n/* attribution and scale controls */\n\n.leaflet-container .leaflet-control-attribution {\n	background-color: rgba(255, 255, 255, 0.7);\n	box-shadow: 0 0 5px #bbb;\n	margin: 0;\n	}\n.leaflet-control-attribution,\n.leaflet-control-scale-line {\n	padding: 0 5px;\n	color: #333;\n	}\n.leaflet-container .leaflet-control-attribution,\n.leaflet-container .leaflet-control-scale {\n	font-size: 11px;\n	}\n.leaflet-left .leaflet-control-scale {\n	margin-left: 5px;\n	}\n.leaflet-bottom .leaflet-control-scale {\n	margin-bottom: 5px;\n	}\n.leaflet-control-scale-line {\n	border: 2px solid #777;\n	border-top: none;\n	color: black;\n	line-height: 1.1;\n	padding: 2px 5px 1px;\n	font-size: 11px;\n	text-shadow: 1px 1px 1px #fff;\n	background-color: rgba(255, 255, 255, 0.5);\n	box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.2);\n	white-space: nowrap;\n	overflow: hidden;\n	}\n.leaflet-control-scale-line:not(:first-child) {\n	border-top: 2px solid #777;\n	border-bottom: none;\n	margin-top: -2px;\n	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);\n	}\n.leaflet-control-scale-line:not(:first-child):not(:last-child) {\n	border-bottom: 2px solid #777;\n	}\n\n.leaflet-touch .leaflet-control-attribution,\n.leaflet-touch .leaflet-control-layers,\n.leaflet-touch .leaflet-control-zoom {\n	box-shadow: none;\n	}\n.leaflet-touch .leaflet-control-layers,\n.leaflet-touch .leaflet-control-zoom {\n	border: 4px solid rgba(0,0,0,0.3);\n	}\n\n\n/* popup */\n\n.leaflet-popup {\n	position: absolute;\n	text-align: center;\n	}\n.leaflet-popup-content-wrapper {\n	padding: 1px;\n	text-align: left;\n	-webkit-border-radius: 20px;\n	        border-radius: 20px;\n	}\n.leaflet-popup-content {\n	margin: 14px 20px;\n	line-height: 1.4;\n	}\n.leaflet-popup-content p {\n	margin: 18px 0;\n	}\n.leaflet-popup-tip-container {\n	margin: 0 auto;\n	width: 40px;\n	height: 20px;\n	position: relative;\n	overflow: hidden;\n	}\n.leaflet-popup-tip {\n	width: 15px;\n	height: 15px;\n	padding: 1px;\n\n	margin: -8px auto 0;\n\n	-webkit-transform: rotate(45deg);\n	   -moz-transform: rotate(45deg);\n	    -ms-transform: rotate(45deg);\n	     -o-transform: rotate(45deg);\n	        transform: rotate(45deg);\n	}\n.leaflet-popup-content-wrapper, .leaflet-popup-tip {\n	background: white;\n\n	box-shadow: 0 3px 14px rgba(0,0,0,0.4);\n	}\n.leaflet-container a.leaflet-popup-close-button {\n	position: absolute;\n	top: 0;\n	right: 0;\n	padding: 4px 5px 0 0;\n	text-align: center;\n	width: 18px;\n	height: 14px;\n	font: 16px/14px Tahoma, Verdana, sans-serif;\n	color: #c3c3c3;\n	text-decoration: none;\n	font-weight: bold;\n	background: transparent;\n	}\n.leaflet-container a.leaflet-popup-close-button:hover {\n	color: #999;\n	}\n.leaflet-popup-scrolled {\n	overflow: auto;\n	border-bottom: 1px solid #ddd;\n	border-top: 1px solid #ddd;\n	}\n\n\n/* div icon */\n\n.leaflet-div-icon {\n	background: #fff;\n	border: 1px solid #666;\n	}\n.leaflet-editing-icon {\n	-webkit-border-radius: 2px;\n	        border-radius: 2px;\n	}\n</style>'
-  // this navigator check is also used in code/smartphone.js
-  + (navigator.userAgent.match(/Android.*Mobile/)
-      ? '<style>body {\n  background: #000;\n  color: #fff;\n}\n\n#sidebar, #updatestatus, #chatcontrols, #chat, #chatinput {\n  background: #0B3351 !important\n}\n\n\n.leaflet-control-layers {\n  margin-left: 0 !important;\n  margin-top: 40px !important;\n}\n\n#chatcontrols {\n  height: 38px;\n  width: 100%;\n}\n\n/* hide shrink button */\n#chatcontrols a:first-child {\n  display: none;\n}\n\n#chatcontrols a {\n  width: 50px;\n  height:36px;\n  overflow: hidden;\n  vertical-align: middle;\n  line-height: 36px;\n  text-decoration: none;\n  -moz-box-sizing: border-box;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n#chat {\n  left:0;\n  right:0;\n  top:37px !important;\n  bottom:30px;\n  width: auto;\n}\n\n#chatinput {\n  width: 100%;\n  height: 30px;\n}\n\n#chat td:nth-child(2), #chatinput td:nth-child(2) {\n  width: 77px;\n}\n\n\n\n\n#sidebartoggle {\n  display: none !important;\n}\n\n#scrollwrapper {\n  top: 36px;\n  bottom: 0;\n  max-height: none !important;\n  width: 100% !important;\n  right: 0;\n  left:0;\n}\n\n#sidebar {\n  width: 100% !important;\n  min-height: 100%;\n  border:0;\n}\n\n#sidebar > * {\n  width: 100%;\n}\n\n#playerstat {\n  margin-top: 5px;\n}\n\n#portaldetails {\n  min-height: 0;\n}\n\n.fullimg {\n  width: 100%;\n}\n\n.leaflet-control-layers-base {\n  float: left;\n}\n\n.leaflet-control-layers-overlays {\n  float: left;\n  margin-left: 8px;\n  border-left: 1px solid #DDDDDD;\n  padding-left: 8px;\n}\n\n.leaflet-control-layers-separator {\n  display: none;\n}\n\n.leaflet-control-layers-list label {\n  padding: 6px 0;\n}\n\n.leaflet-control-attribution {\n\n}\n</style>'
-      : '')
+//note: smartphone.css injection moved into code/smartphone.js
   + '<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Coda"/>';
 
 document.getElementsByTagName('body')[0].innerHTML = ''
@@ -86,7 +63,7 @@ document.getElementsByTagName('body')[0].innerHTML = ''
   + '<form id="chatinput" style="display:none"><table><tr>'
   + '  <td><time></time></td>'
   + '  <td><mark>tell faction:</mark></td>'
-  + '  <td><input type="text"/></td>'
+  + '  <td><input id="chattext" type="text"/></td>'
   + '</tr></table></form>'
   + '<a id="sidebartoggle"><span class="toggle close"></span></a>'
   + '<div id="scrollwrapper">' // enable scrolling for small screens
@@ -98,7 +75,7 @@ document.getElementsByTagName('body')[0].innerHTML = ''
   + '    <input id="redeem" placeholder="Redeem code…" type="text"/>'
   + '    <div id="toolbox">'
   + '      <a onmouseover="setPermaLink(this)" onclick="setPermaLink(this);return androidCopy(this.href)" >permalink</a>'
-  + '      <a href="https://github.com/breunigs/ingress-intel-total-conversion#readme" title="IITC = Ingress Intel Total Conversion.\n\nOn the script’s homepage you can:\n– find updates\n– get plugins\n– report bugs\n– and contribute." style="cursor: help">IITC’s page</a></div>'
+  + '      <a href="http://iitc.jonatkins.com/" title="IITC = Ingress Intel Total Conversion.\n\nOn the script’s homepage you can:\n– find updates\n– get plugins\n– report bugs\n– and contribute." style="cursor: help">IITC’s page</a></div>'
   + '  </div>'
   + '</div>'
   + '<div id="updatestatus"></div>'
@@ -243,6 +220,972 @@ if(typeof window.plugin !== 'function') window.plugin = function() {};
 
 
 
+// PORTAL DETAILS TOOLS //////////////////////////////////////////////
+// hand any of these functions the details-hash of a portal, and they
+// will return useful, but raw data.
+
+// returns a float. Displayed portal level is always rounded down from
+// that value.
+window.getPortalLevel = function(d) {
+  var lvl = 0;
+  var hasReso = false;
+  $.each(d.resonatorArray.resonators, function(ind, reso) {
+    if(!reso) return true;
+    lvl += parseInt(reso.level);
+    hasReso = true;
+  });
+  return hasReso ? Math.max(1, lvl/8) : 0;
+}
+
+window.getTotalPortalEnergy = function(d) {
+  var nrg = 0;
+  $.each(d.resonatorArray.resonators, function(ind, reso) {
+    if(!reso) return true;
+    var level = parseInt(reso.level);
+    var max = RESO_NRG[level];
+    nrg += max;
+  });
+  return nrg;
+}
+
+// For backwards compatibility
+window.getPortalEnergy = window.getTotalPortalEnergy;
+
+window.getCurrentPortalEnergy = function(d) {
+  var nrg = 0;
+  $.each(d.resonatorArray.resonators, function(ind, reso) {
+    if(!reso) return true;
+    nrg += parseInt(reso.energyTotal);
+  });
+  return nrg;
+}
+
+window.getPortalRange = function(d) {
+  // formula by the great gals and guys at
+  // http://decodeingress.me/2012/11/18/ingress-portal-levels-and-link-range/
+
+  var lvl = 0;
+  var resoMissing = false;
+  $.each(d.resonatorArray.resonators, function(ind, reso) {
+    if(!reso) {
+      resoMissing = true;
+      return false;
+    }
+    lvl += parseInt(reso.level);
+  });
+  if(resoMissing) return 0;
+  return 160*Math.pow(getPortalLevel(d), 4);
+}
+
+window.getAvgResoDist = function(d) {
+  var sum = 0, resos = 0;
+  $.each(d.resonatorArray.resonators, function(ind, reso) {
+    if(!reso) return true;
+    sum += parseInt(reso.distanceToPortal);
+    resos++;
+  });
+  return resos ? sum/resos : 0;
+}
+
+window.getAttackApGain = function(d) {
+  var resoCount = 0;
+  var maxResonators = MAX_RESO_PER_PLAYER.slice(0);
+  var curResonators = [ 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  
+  for(var n = PLAYER.level + 1; n < 9; n++) {
+    maxResonators[n] = 0;
+  }
+  $.each(d.resonatorArray.resonators, function(ind, reso) {
+    if(!reso)
+      return true;
+    resoCount += 1;
+    if(reso.ownerGuid === PLAYER.guid) {
+      maxResonators[parseInt(reso.level)] -= 1;
+    } else {
+      curResonators[parseInt(reso.level)] += 1;
+    }
+  });
+
+  var linkCount = d.portalV2.linkedEdges ? d.portalV2.linkedEdges.length : 0;
+  var fieldCount = d.portalV2.linkedFields ? d.portalV2.linkedFields.length : 0;
+
+  var resoAp = resoCount * DESTROY_RESONATOR;
+  var linkAp = linkCount * DESTROY_LINK;
+  var fieldAp = fieldCount * DESTROY_FIELD;
+  var destroyAp = resoAp + linkAp + fieldAp;
+  var captureAp = CAPTURE_PORTAL + 8 * DEPLOY_RESONATOR + COMPLETION_BONUS;
+  var enemyAp = destroyAp + captureAp;
+  var deployCount = 8 - resoCount;
+  var completionAp = (deployCount > 0) ? COMPLETION_BONUS : 0;
+  var upgradeCount = 0;
+  var upgradeAvailable = maxResonators[8];
+  for(var n = 7; n >= 0; n--) {
+    upgradeCount += curResonators[n];
+    if(upgradeAvailable < upgradeCount) {
+        upgradeCount -= (upgradeCount - upgradeAvailable);
+    }
+    upgradeAvailable += maxResonators[n];
+  }
+  var friendlyAp = deployCount * DEPLOY_RESONATOR + upgradeCount * UPGRADE_ANOTHERS_RESONATOR + completionAp;
+  return {
+    friendlyAp: friendlyAp,
+    deployCount: deployCount,
+    upgradeCount: upgradeCount,
+    enemyAp: enemyAp,
+    destroyAp: destroyAp,
+    resoAp: resoAp,
+    captureAp: captureAp
+  };
+}
+
+
+
+// PORTAL RENDER LIMIT HANDLER ///////////////////////////////////////
+// Functions to handle hiding low level portal when portal render 
+// limit is reached. 
+//
+// On initialization, previous minLevel will preserve to previousMinLevel
+// with zoom level difference. 
+//
+// After initialized and reset in window.requestData(), "processPortals" 
+// intercept all portals data in "handleDataResponse". Put the count of 
+// new portals to newPortalsPerLevel[portal level]. And split portals 
+// into two parts base on previousMinLevel. Portals with level >= 
+// previousMinLevel will return as result and continue to render. 
+// Others will save to portalsPreviousMinLevel. If there is no more 
+// active request of map data, portals will not split and 
+// portalsPreviousMinLevel will add back to result and render base on 
+// current minLevel. 
+//
+// "handleFailRequest" is added to handle the case when the last request 
+// failed and "processPortals" didn't get called. It will get
+// portalsPreviousMinLevel base on current minLevel and render them.
+//
+// "getMinLevel" will be called by "getMinPortalLevel" in utils_misc.js 
+// to determine min portal level to draw on map.
+// 
+// "getMinLevel" will return minLevel and call "setMinLevel" if 
+// minLevel hasn't set yet. 
+// 
+// In "setMinLevel", it will loop through all portal level from 
+// high to low, and sum total portal count (old + new) to check 
+// minLevel. 
+//
+// In each call of window.handleDataResponse(), it will call 
+// "resetCounting" to reset previous response data. But minLevel
+// is preserved and only replaced when render limit reached in 
+// higher level, until next window.requestData() called and reset.
+// 
+
+window.portalRenderLimit = function() {}
+
+window.portalRenderLimit.initialized = false;
+window.portalRenderLimit.minLevelSet = false;
+window.portalRenderLimit.minLevel = -1;
+window.portalRenderLimit.previousMinLevel = -1;
+window.portalRenderLimit.previousZoomLevel;
+window.portalRenderLimit.newPortalsPerLevel = new Array(MAX_PORTAL_LEVEL + 1);
+window.portalRenderLimit.portalsPreviousMinLevel = new Array(MAX_PORTAL_LEVEL + 1);
+
+window.portalRenderLimit.init = function () {
+  var currentZoomLevel = map.getZoom();
+  portalRenderLimit.previousZoomLevel = portalRenderLimit.previousZoomLevel || currentZoomLevel;
+
+  // If there is a minLevel set in previous run, calculate previousMinLevel with it.
+  if(portalRenderLimit.minLevelSet) {
+    var zoomDiff = currentZoomLevel - portalRenderLimit.previousZoomLevel;
+    portalRenderLimit.previousMinLevel = Math.max(portalRenderLimit.minLevel - zoomDiff, -1);
+    portalRenderLimit.previousMinLevel = Math.min(portalRenderLimit.previousMinLevel, MAX_PORTAL_LEVEL);
+  }
+
+  portalRenderLimit.previousZoomLevel = currentZoomLevel;
+
+  portalRenderLimit.initialized = true;
+  portalRenderLimit.minLevel = -1;
+  portalRenderLimit.resetCounting();
+  portalRenderLimit.resetPortalsPreviousMinLevel();
+}
+
+window.portalRenderLimit.resetCounting = function() {
+  portalRenderLimit.minLevelSet = false;
+  for(var i = 0; i <= MAX_PORTAL_LEVEL; i++) {
+    portalRenderLimit.newPortalsPerLevel[i] = 0;
+  }
+}
+
+window.portalRenderLimit.resetPortalsPreviousMinLevel = function() {
+  for(var i = 0; i <= MAX_PORTAL_LEVEL; i++) {
+    portalRenderLimit.portalsPreviousMinLevel[i] = new Array();
+  }
+}
+
+window.portalRenderLimit.splitOrMergeLowLevelPortals = function(originPortals) {
+  portalRenderLimit.resetCounting();
+  portalRenderLimit.countingPortals(originPortals);
+
+  var resultPortals = requests.isLastRequest('getThinnedEntitiesV2')
+    ? portalRenderLimit.mergeLowLevelPortals(originPortals)
+    : portalRenderLimit.splitLowLevelPortals(originPortals);
+
+  return resultPortals;
+}
+
+window.portalRenderLimit.countingPortals = function(portals) {
+  $.each(portals, function(ind, portal) {
+    var portalGuid = portal[0];
+    var portalLevel = parseInt(getPortalLevel(portal[2]));
+    var layerGroup = portalsLayers[portalLevel];
+
+    if(findEntityInLeaflet(layerGroup, window.portals, portalGuid)) return true;
+
+    portalRenderLimit.newPortalsPerLevel[portalLevel]++;
+  });
+}
+
+window.portalRenderLimit.splitLowLevelPortals = function(portals) {
+  var resultPortals = new Array();
+  $.each(portals, function(ind, portal) {
+    var portalLevel = parseInt(getPortalLevel(portal[2]));
+    if(portalLevel < portalRenderLimit.previousMinLevel) {
+      portalRenderLimit.portalsPreviousMinLevel[portalLevel].push(portal);
+    }else{
+      resultPortals.push(portal);
+    }
+  });
+  return resultPortals;
+}
+
+window.portalRenderLimit.mergeLowLevelPortals = function(appendTo) {
+  var resultPortals = appendTo ? appendTo : new Array();
+  for(var i = portalRenderLimit.getMinLevel(); 
+      i < portalRenderLimit.previousMinLevel; 
+     i++) {
+    $.merge(resultPortals, portalRenderLimit.portalsPreviousMinLevel[i]);
+  }
+
+  // Reset portalsPreviousMinLevel, ensure they return only once
+  portalRenderLimit.resetPortalsPreviousMinLevel();
+  return resultPortals;
+}
+
+window.portalRenderLimit.getMinLevel = function() {
+  if(!portalRenderLimit.initialized) return -1;
+  if(!portalRenderLimit.minLevelSet) portalRenderLimit.setMinLevel();
+  return portalRenderLimit.minLevel;
+}
+
+window.portalRenderLimit.setMinLevel = function() {
+  var totalPortalsCount = 0;
+  var newMinLevel = MAX_PORTAL_LEVEL + 1;
+  
+  // Find the min portal level under render limit
+  while(newMinLevel > 0) {
+    var oldPortalCount = layerGroupLength(portalsLayers[newMinLevel - 1]);
+    var newPortalCount = portalRenderLimit.newPortalsPerLevel[newMinLevel - 1];
+    totalPortalsCount += oldPortalCount + newPortalCount;
+    if(totalPortalsCount >= MAX_DRAWN_PORTALS)
+      break;
+    newMinLevel--;
+  }
+  
+  // If render limit reached at max portal level, still let portal at max level render
+  newMinLevel = Math.min(newMinLevel, MAX_PORTAL_LEVEL);
+  
+  portalRenderLimit.minLevel = Math.max(newMinLevel, portalRenderLimit.minLevel);
+  portalRenderLimit.minLevelSet = true;
+}
+
+
+// PLUGIN HOOKS ////////////////////////////////////////////////////////
+// Plugins may listen to any number of events by specifying the name of
+// the event to listen to and handing a function that should be exe-
+// cuted when an event occurs. Callbacks will receive additional data
+// the event created as their first parameter. The value is always a
+// hash that contains more details.
+//
+// For example, this line will listen for portals to be added and print
+// the data generated by the event to the console:
+// window.addHook('portalAdded', function(data) { console.log(data) });
+//
+// Boot hook: booting is handled differently because IITC may not yet
+//            be available. Have a look at the plugins in plugins/. All
+//            code before “// PLUGIN START” and after “// PLUGIN END” is
+//            required to successfully boot the plugin.
+//
+// Here’s more specific information about each event:
+// portalAdded: called when a portal has been received and is about to
+//              be added to its layer group. Note that this does NOT
+//              mean it is already visible or will be, shortly after.
+//              If a portal is added to a hidden layer it may never be
+//              shown at all. Injection point is in
+//              code/map_data.js#renderPortal near the end. Will hand
+//              the Leaflet CircleMarker for the portal in "portal" var.
+// portalDetailsUpdated: fired after the details in the sidebar have
+//              been (re-)rendered Provides data about the portal that
+//              has been selected.
+// publicChatDataAvailable: this hook runs after data for any of the
+//              public chats has been received and processed, but not
+//              yet been displayed. The data hash contains both the un-
+//              processed raw ajax response as well as the processed
+//              chat data that is going to be used for display.
+// factionChatDataAvailable: this hook runs after data for the faction
+//              chat has been received and processed, but not yet been
+//              displayed. The data hash contains both the unprocessed
+//              raw ajax response as well as the processed chat data
+//              that is going to be used for display.
+// portalDataLoaded: callback is passed the argument of
+//              {portals : [portal, portal, ...]} where "portal" is the
+//              data element and not the leaflet object. "portal" is an
+//              array [GUID, time, details]. Plugin can manipulate the
+//              array to change order or add additional values to the
+//              details of a portal.
+// beforePortalReRender: the callback argument is
+//              {portal: ent[2], oldPortal : d, reRender : false}.
+//              The callback needs to update the value of reRender to
+//              true if the plugin has a reason to have the portal
+//              redrawn. It is called early on in the
+//              code/map_data.js#renderPortal as long as there was an
+//              old portal for the guid.
+// checkRenderLimit: callback is passed the argument of
+//              {reached : false} to indicate that the renderlimit is reached
+//              set reached to true.
+// requestFinished: called after each request finished. Argument is
+//              {success: boolean} indicated the request success or fail.
+
+
+
+window._hooks = {}
+window.VALID_HOOKS = ['portalAdded', 'portalDetailsUpdated',
+  'publicChatDataAvailable', 'factionChatDataAvailable', 'portalDataLoaded',
+  'beforePortalReRender', 'checkRenderLimit', 'requestFinished'];
+
+window.runHooks = function(event, data) {
+  if(VALID_HOOKS.indexOf(event) === -1) throw('Unknown event type: ' + event);
+
+  if(!_hooks[event]) return;
+  $.each(_hooks[event], function(ind, callback) {
+    callback(data);
+  });
+}
+
+
+window.addHook = function(event, callback) {
+  if(VALID_HOOKS.indexOf(event) === -1) throw('Unknown event type: ' + event);
+  if(typeof callback !== 'function') throw('Callback must be a function.');
+
+  if(!_hooks[event])
+    _hooks[event] = [callback];
+  else
+    _hooks[event].push(callback);
+}
+
+
+
+// DEBUGGING TOOLS ///////////////////////////////////////////////////
+// meant to be used from browser debugger tools and the like.
+
+window.debug = function() {}
+
+window.debug.renderDetails = function() {
+  console.log('portals: ' + Object.keys(portals).length);
+  console.log('links:   ' + Object.keys(links).length);
+  console.log('fields:  ' + Object.keys(fields).length);
+}
+
+window.debug.printStackTrace = function() {
+  var e = new Error('dummy');
+  console.log(e.stack);
+  return e.stack;
+}
+
+window.debug.clearPortals = function() {
+  for(var i = 0; i < portalsLayers.length; i++)
+    portalsLayers[i].clearLayers();
+}
+
+window.debug.clearLinks = function() {
+  linksLayer.clearLayers();
+}
+
+window.debug.clearFields = function() {
+  fieldsLayer.clearLayers();
+}
+
+window.debug.getFields = function() {
+  return fields;
+}
+
+window.debug.forceSync = function() {
+  localStorage.clear();
+  window.playersToResolve = [];
+  window.playersInResolving = [];
+  debug.clearFields();
+  debug.clearLinks();
+  debug.clearPortals();
+  updateGameScore();
+  requestData();
+}
+
+window.debug.console = function() {
+  $('#debugconsole').text();
+}
+
+window.debug.console.create = function() {
+  if($('#debugconsole').length) return;
+  $('#chatcontrols').append('<a>debug</a>');
+  $('#chatcontrols a:last').click(function() {
+    $('#chatinput mark').css('cssText', 'color: #bbb !important').text('debug:');
+    $('#chat > div').hide();
+    $('#debugconsole').show();
+    $('#chatcontrols .active').removeClass('active');
+    $(this).addClass('active');
+  });
+  $('#chat').append('<div style="display: none" id="debugconsole"><table></table></div>');
+}
+
+window.debug.console.renderLine = function(text, errorType) {
+  debug.console.create();
+  switch(errorType) {
+    case 'error':   var color = '#FF424D'; break;
+    case 'warning': var color = '#FFDE42'; break;
+    default:        var color = '#eee';
+  }
+  if(typeof text !== 'string' && typeof text !== 'number') {
+    var cache = [];
+    text = JSON.stringify(text, function(key, value) {
+      if(typeof value === 'object' && value !== null) {
+        if(cache.indexOf(value) !== -1) {
+          // Circular reference found, discard key
+          return;
+        }
+        // Store value in our collection
+        cache.push(value);
+      }
+      return value;
+    });
+    cache = null;
+  }
+  var d = new Date();
+  var ta = d.toLocaleTimeString(); // print line instead maybe?
+  var tb = d.toLocaleString();
+  var t = '<time title="'+tb+'" data-timestamp="'+d.getTime()+'">'+ta+'</time>';
+  var s = 'style="color:'+color+'"';
+  var l = '<tr><td>'+t+'</td><td><mark '+s+'>'+errorType+'</mark></td><td>'+text+'</td></tr>';
+  $('#debugconsole table').prepend(l);
+}
+
+window.debug.console.log = function(text) {
+  debug.console.renderLine(text, 'notice');
+}
+
+window.debug.console.warn = function(text) {
+  debug.console.renderLine(text, 'warning');
+}
+
+window.debug.console.error = function(text) {
+  debug.console.renderLine(text, 'error');
+}
+
+window.debug.console.overwriteNative = function() {
+  window.debug.console.create();
+  window.console = function() {}
+  window.console.log = window.debug.console.log;
+  window.console.warn = window.debug.console.warn;
+  window.console.error = window.debug.console.error;
+}
+
+window.debug.console.overwriteNativeIfRequired = function() {
+  if(!window.console || L.Browser.mobile)
+    window.debug.console.overwriteNative();
+}
+
+
+// PORTAL DETAILS DISPLAY ////////////////////////////////////////////
+// hand any of these functions the details-hash of a portal, and they
+// will return pretty, displayable HTML or parts thereof.
+
+// returns displayable text+link about portal range
+window.getRangeText = function(d) {
+  var range = getPortalRange(d);
+  return ['range',
+      '<a onclick="window.rangeLinkClick()">'
+    + (range > 1000
+      ? Math.round(range/1000) + ' km'
+      : Math.round(range)      + ' m')
+    + '</a>'];
+}
+
+// generates description text from details for portal
+window.getPortalDescriptionFromDetails = function(details) {
+  var descObj = details.portalV2.descriptiveText;
+  // FIXME: also get real description?
+  var desc = descObj.TITLE + '\n' + descObj.ADDRESS;
+  if(descObj.ATTRIBUTION)
+    desc += '\nby '+descObj.ATTRIBUTION+' ('+descObj.ATTRIBUTION_LINK+')';
+  return desc;
+}
+
+
+// given portal details, returns html code to display mod details.
+window.getModDetails = function(d) {
+  var mods = [];
+  var modsTitle = [];
+  var modsColor = [];
+  $.each(d.portalV2.linkedModArray, function(ind, mod) {
+    if(!mod) {
+      mods.push('');
+      modsTitle.push('');
+      modsColor.push('#000');
+    } else if(mod.type === 'RES_SHIELD') {
+
+      var title = mod.rarity.capitalize() + ' ' + mod.displayName + '\n';
+      title += 'Installed by: '+ getPlayerName(mod.installingUser);
+
+      title += '\nStats:';
+      for (var key in mod.stats) {
+        if (!mod.stats.hasOwnProperty(key)) continue;
+        title += '\n+' +  mod.stats[key] + ' ' + key.capitalize();
+      }
+
+      mods.push(mod.rarity.capitalize().replace('_', ' ') + ' ' + mod.displayName);
+      modsTitle.push(title);
+      modsColor.push(COLORS_MOD[mod.rarity]);
+    } else {
+      mods.push(mod.type);
+      modsTitle.push('Unknown mod. No further details available.');
+      modsColor.push('#FFF');
+    }
+  });
+
+  var t = '<span'+(modsTitle[0].length ? ' title="'+modsTitle[0]+'"' : '')+' style="color:'+modsColor[0]+'">'+mods[0]+'</span>'
+        + '<span'+(modsTitle[1].length ? ' title="'+modsTitle[1]+'"' : '')+' style="color:'+modsColor[1]+'">'+mods[1]+'</span>'
+        + '<span'+(modsTitle[2].length ? ' title="'+modsTitle[2]+'"' : '')+' style="color:'+modsColor[2]+'">'+mods[2]+'</span>'
+        + '<span'+(modsTitle[3].length ? ' title="'+modsTitle[3]+'"' : '')+' style="color:'+modsColor[3]+'">'+mods[3]+'</span>'
+
+  return t;
+}
+
+window.getEnergyText = function(d) {
+  var currentNrg = getCurrentPortalEnergy(d);
+  var totalNrg = getTotalPortalEnergy(d);
+  var inf = currentNrg + ' / ' + totalNrg;
+  var fill = prettyEnergy(currentNrg) + ' / ' + prettyEnergy(totalNrg)
+  return ['energy', '<tt title="'+inf+'">' + fill + '</tt>'];
+}
+
+window.getAvgResoDistText = function(d) {
+  var avgDist = Math.round(10*getAvgResoDist(d))/10;
+  return ['reso dist', avgDist + ' m'];
+}
+
+window.getResonatorDetails = function(d) {
+  var resoDetails = [];
+  // octant=slot: 0=E, 1=NE, 2=N, 3=NW, 4=W, 5=SW, 6=S, SE=7
+  // resos in the display should be ordered like this:
+  //   N    NE         Since the view is displayed in columns, they
+  //  NW    E          need to be ordered like this: N, NW, W, SW, NE,
+  //   W    SE         E, SE, S, i.e. 2 3 4 5 1 0 7 6
+  //  SW    S
+
+  $.each([2, 1, 3, 0, 4, 7, 5, 6], function(ind, slot) {
+    var reso = d.resonatorArray.resonators[slot];
+    if(!reso) {
+      resoDetails.push(renderResonatorDetails(slot, 0, 0, null, null));
+      return true;
+    }
+
+    var l = parseInt(reso.level);
+    var v = parseInt(reso.energyTotal);
+    var nick = window.getPlayerName(reso.ownerGuid);
+    var dist = reso.distanceToPortal;
+    // if array order and slot order drift apart, at least the octant
+    // naming will still be correct.
+    slot = parseInt(reso.slot);
+
+    resoDetails.push(renderResonatorDetails(slot, l, v, dist, nick));
+  });
+  return genFourColumnTable(resoDetails);
+}
+
+// helper function that renders the HTML for a given resonator. Does
+// not work with raw details-hash. Needs digested infos instead:
+// slot: which slot this resonator occupies. Starts with 0 (east) and
+// rotates clockwise. So, last one is 7 (southeast).
+window.renderResonatorDetails = function(slot, level, nrg, dist, nick) {
+  if(level === 0) {
+    var meter = '<span class="meter" title="octant:\t' + OCTANTS[slot] + '"></span>';
+  } else {
+    var max = RESO_NRG[level];
+    var fillGrade = nrg/max*100;
+
+    var inf = 'energy:\t' + nrg   + ' / ' + max + ' (' + Math.round(fillGrade) + '%)\n'
+            + 'level:\t'  + level + '\n'
+            + 'distance:\t' + dist  + 'm\n'
+            + 'owner:\t'  + nick  + '\n'
+            + 'octant:\t' + OCTANTS[slot];
+
+    var style = 'width:'+fillGrade+'%; background:'+COLORS_LVL[level]+';';
+
+    var color = (level < 3 ? "#9900FF" : "#FFFFFF");
+
+    var lbar = '<span class="meter-level" style="color: ' + color + ';"> ' + level + ' </span>';
+
+    var fill  = '<span style="'+style+'"></span>';
+
+    var meter = '<span class="meter" title="'+inf+'">' + fill + lbar + '</span>';
+  }
+  nick = nick ? '<span class="nickname">'+nick+'</span>' : null;
+  return [meter, nick || ''];
+}
+
+// calculate AP gain from destroying portal and then capturing it by deploying resonators
+window.getAttackApGainText = function(d) {
+  var breakdown = getAttackApGain(d);
+  var totalGain = breakdown.enemyAp;
+
+  function tt(text) {
+    var t = '';
+    if (PLAYER.team == d.controllingTeam.team) {
+      totalGain = breakdown.friendlyAp;
+      t += 'Friendly AP:\t' + breakdown.friendlyAp + '\n';
+      t += '  Deploy ' + breakdown.deployCount + ', ';
+      t += 'Upgrade ' + breakdown.upgradeCount + '\n';
+      t += '\n';
+    }
+    t += 'Enemy AP:\t' + breakdown.enemyAp + '\n';
+    t += '  Destroy AP:\t' + breakdown.destroyAp + '\n';
+    t += '  Capture AP:\t' + breakdown.captureAp + '\n';
+    return '<tt title="' + t + '">' + digits(text) + '</tt>';
+  }
+
+  return [tt('AP Gain'), tt(totalGain)];
+}
+
+
+
+
+// UTILS + MISC  ///////////////////////////////////////////////////////
+
+window.layerGroupLength = function(layerGroup) {
+  var layersCount = 0;
+  var layers = layerGroup._layers;
+  if (layers)
+    layersCount = Object.keys(layers).length;
+  return layersCount;
+}
+
+// retrieves parameter from the URL?query=string.
+window.getURLParam = function(param) {
+  var v = document.URL;
+  var i = v.indexOf(param);
+  if(i <= -1) return '';
+  v = v.substr(i);
+  i = v.indexOf("&");
+  if(i >= 0) v = v.substr(0, i);
+  return v.replace(param+"=","");
+}
+
+// read cookie by name.
+// http://stackoverflow.com/a/5639455/1684530 by cwolves
+var cookies;
+window.readCookie = function(name,c,C,i){
+  if(cookies) return cookies[name];
+  c = document.cookie.split('; ');
+  cookies = {};
+  for(i=c.length-1; i>=0; i--){
+    C = c[i].split('=');
+    cookies[C[0]] = unescape(C[1]);
+  }
+  return cookies[name];
+}
+
+window.writeCookie = function(name, val) {
+  document.cookie = name + "=" + val + '; expires=Thu, 31 Dec 2020 23:59:59 GMT; path=/';
+}
+
+// add thousand separators to given number.
+// http://stackoverflow.com/a/1990590/1684530 by Doug Neiner.
+window.digits = function(d) {
+  return (d+"").replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1 ");
+}
+
+// posts AJAX request to Ingress API.
+// action: last part of the actual URL, the rpc/dashboard. is
+//         added automatically
+// data: JSON data to post. method will be derived automatically from
+//       action, but may be overridden. Expects to be given Hash.
+//       Strings are not supported.
+// success: method to call on success. See jQuery API docs for avail-
+//          able arguments: http://api.jquery.com/jQuery.ajax/
+// error: see above. Additionally it is logged if the request failed.
+window.postAjax = function(action, data, success, error) {
+  data = JSON.stringify($.extend({method: 'dashboard.'+action}, data));
+  var remove = function(data, textStatus, jqXHR) { window.requests.remove(jqXHR); };
+  var errCnt = function(jqXHR) { window.failedRequestCount++; window.requests.remove(jqXHR); };
+  var result = $.ajax({
+    // use full URL to avoid issues depending on how people set their
+    // slash. See:
+    // https://github.com/breunigs/ingress-intel-total-conversion/issues/56
+    url: window.location.protocol + '//www.ingress.com/rpc/dashboard.'+action,
+    type: 'POST',
+    data: data,
+    dataType: 'json',
+    success: [remove, success],
+    error: error ? [errCnt, error] : errCnt,
+    contentType: 'application/json; charset=utf-8',
+    beforeSend: function(req) {
+      req.setRequestHeader('X-CSRFToken', readCookie('csrftoken'));
+    }
+  });
+  result.action = action;
+  return result;
+}
+
+// converts unix timestamps to HH:mm:ss format if it was today;
+// otherwise it returns YYYY-MM-DD
+window.unixTimeToString = function(time, full) {
+  if(!time) return null;
+  var d = new Date(typeof time === 'string' ? parseInt(time) : time);
+  var time = d.toLocaleTimeString();
+  var date = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+  if(typeof full !== 'undefined' && full) return date + ' ' + time;
+  if(d.toDateString() == new Date().toDateString())
+    return time;
+  else
+    return date;
+}
+
+window.unixTimeToHHmm = function(time) {
+  if(!time) return null;
+  var d = new Date(typeof time === 'string' ? parseInt(time) : time);
+  var h = '' + d.getHours(); h = h.length === 1 ? '0' + h : h;
+  var s = '' + d.getMinutes(); s = s.length === 1 ? '0' + s : s;
+  return  h + ':' + s;
+}
+
+window.rangeLinkClick = function() {
+  if(window.portalRangeIndicator)
+    window.map.fitBounds(window.portalRangeIndicator.getBounds());
+  if(window.isSmartphone)
+    window.smartphone.mapButton.click();
+}
+
+window.showPortalPosLinks = function(lat, lng, name) {
+  var portal_name = '';
+  if(name !== undefined) {
+    portal_name = encodeURIComponent(' (' + name + ')');
+  }
+  if (typeof android !== 'undefined' && android && android.intentPosLink) {
+    android.intentPosLink(window.location.protocol + '//maps.google.com/?q='+lat+','+lng);
+  } else {
+    var qrcode = '<div id="qrcode"></div>';
+    var script = '<script>$(\'#qrcode\').qrcode({text:\'GEO:'+lat+','+lng+'\'});</script>';
+    var gmaps = '<a href="https://maps.google.com/?q='+lat+','+lng+portal_name+'">gmaps</a>';
+    var osm = '<a href="http://www.openstreetmap.org/?mlat='+lat+'&mlon='+lng+'&zoom=16">OSM</a>';
+    var latLng = '<span>'+lat+','+lng +'</span>';
+    alert('<div style="text-align: center;">' + qrcode + script + gmaps + ' ' + osm + '<br />' + latLng + '</div>');
+  }
+}
+
+window.androidCopy = function(text) {
+  if(typeof android === 'undefined' || !android || !android.copy)
+    return true; // i.e. execute other actions
+  else
+    android.copy(text);
+  return false;
+}
+
+window.reportPortalIssue = function(info) {
+  var t = 'Redirecting you to a Google Help Page.\n\nThe text box contains all necessary information. Press CTRL+C to copy it.';
+  var d = window.portals[window.selectedPortal].options.details;
+
+  var info = 'Your Nick: ' + PLAYER.nickname + '        '
+    + 'Portal: ' + d.portalV2.descriptiveText.TITLE + '        '
+    + 'Location: ' + d.portalV2.descriptiveText.ADDRESS
+    +' (lat ' + (d.locationE6.latE6/1E6) + '; lng ' + (d.locationE6.lngE6/1E6) + ')';
+
+  //codename, approx addr, portalname
+  if(prompt(t, info) !== null)
+    location.href = 'https://support.google.com/ingress?hl=en&contact=1';
+}
+
+window._storedPaddedBounds = undefined;
+window.getPaddedBounds = function() {
+  if(_storedPaddedBounds === undefined) {
+    map.on('zoomstart zoomend movestart moveend', function() {
+      window._storedPaddedBounds = null;
+    });
+  }
+  if(renderLimitReached(0.7)) return window.map.getBounds();
+  if(window._storedPaddedBounds) return window._storedPaddedBounds;
+
+  var p = window.map.getBounds().pad(VIEWPORT_PAD_RATIO);
+  window._storedPaddedBounds = p;
+  return p;
+}
+
+// returns true if the render limit has been reached. The default ratio
+// is 1, which means it will tell you if there are more items drawn than
+// acceptable. A value of 0.9 will tell you if 90% of the amount of
+// acceptable entities have been drawn. You can use this to heuristi-
+// cally detect if the render limit will be hit.
+window.renderLimitReached = function(ratio) {
+  ratio = ratio || 1;
+  if(Object.keys(portals).length*ratio >= MAX_DRAWN_PORTALS) return true;
+  if(Object.keys(links).length*ratio >= MAX_DRAWN_LINKS) return true;
+  if(Object.keys(fields).length*ratio >= MAX_DRAWN_FIELDS) return true;
+  var param = { 'reached': false };
+  window.runHooks('checkRenderLimit', param);
+  return param.reached;
+}
+
+window.getMinPortalLevel = function() {
+  var z = map.getZoom();
+  if(z >= 16) return 0;
+  var conv = ['impossible', 8,7,7,6,6,5,5,4,4,3,3,2,2,1,1];
+  var minLevelByRenderLimit = portalRenderLimit.getMinLevel();
+  var result = minLevelByRenderLimit > conv[z]
+    ? minLevelByRenderLimit
+    : conv[z];
+  return result;
+}
+
+// returns number of pixels left to scroll down before reaching the
+// bottom. Works similar to the native scrollTop function.
+window.scrollBottom = function(elm) {
+  if(typeof elm === 'string') elm = $(elm);
+  return elm.get(0).scrollHeight - elm.innerHeight() - elm.scrollTop();
+}
+
+window.zoomToAndShowPortal = function(guid, latlng) {
+  map.setView(latlng, 17);
+  // if the data is available, render it immediately. Otherwise defer
+  // until it becomes available.
+  if(window.portals[guid])
+    renderPortalDetails(guid);
+  else
+    urlPortal = guid;
+}
+
+// translates guids to entity types
+window.getTypeByGuid = function(guid) {
+  // portals end in “.11” or “.12“, links in “.9", fields in “.b”
+  // .11 == portals
+  // .12 == portals
+  // .9  == links
+  // .b  == fields
+  // .c  == player/creator
+  // .d  == chat messages
+  //
+  // others, not used in web:
+  // .5  == resources (burster/resonator)
+  // .6  == XM
+  // .4  == media items, maybe all droppped resources (?)
+  // resonator guid is [portal guid]-resonator-[slot]
+  switch(guid.slice(33)) {
+    case '11':
+    case '12':
+      return TYPE_PORTAL;
+
+    case '9':
+      return TYPE_LINK;
+
+    case 'b':
+      return TYPE_FIELD;
+
+    case 'c':
+      return TYPE_PLAYER;
+
+    case 'd':
+      return TYPE_CHAT;
+
+    default:
+      if(guid.slice(-11,-2) == 'resonator') return TYPE_RESONATOR;
+      return TYPE_UNKNOWN;
+  }
+}
+
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
+}
+
+// http://stackoverflow.com/a/646643/1684530 by Bergi and CMS
+if (typeof String.prototype.startsWith !== 'function') {
+  String.prototype.startsWith = function (str){
+    return this.slice(0, str.length) === str;
+  };
+}
+
+window.prettyEnergy = function(nrg) {
+  return nrg> 1000 ? Math.round(nrg/1000) + ' k': nrg;
+}
+
+window.setPermaLink = function(elm) {
+  var c = map.getCenter();
+  var lat = Math.round(c.lat*1E6);
+  var lng = Math.round(c.lng*1E6);
+  var qry = 'latE6='+lat+'&lngE6='+lng+'&z=' + (map.getZoom()-1);
+  $(elm).attr('href',  'https://www.ingress.com/intel?' + qry);
+}
+
+window.uniqueArray = function(arr) {
+  return $.grep(arr, function(v, i) {
+    return $.inArray(v, arr) === i;
+  });
+}
+
+window.genFourColumnTable = function(blocks) {
+  var t = $.map(blocks, function(detail, index) {
+    if(!detail) return '';
+    if(index % 2 === 0)
+      return '<tr><td>'+detail[1]+'</td><th>'+detail[0]+'</th>';
+    else
+      return '    <th>'+detail[0]+'</th><td>'+detail[1]+'</td></tr>';
+  }).join('');
+  if(t.length % 2 === 1) t + '<td></td><td></td></tr>';
+  return t;
+}
+
+
+// converts given text with newlines (\n) and tabs (\t) to a HTML
+// table automatically.
+window.convertTextToTableMagic = function(text) {
+  // check if it should be converted to a table
+  if(!text.match(/\t/)) return text.replace(/\n/g, '<br>');
+
+  var data = [];
+  var columnCount = 0;
+
+  // parse data
+  var rows = text.split('\n');
+  $.each(rows, function(i, row) {
+    data[i] = row.split('\t');
+    if(data[i].length > columnCount) columnCount = data[i].length;
+  });
+
+  // build the table
+  var table = '<table>';
+  $.each(data, function(i, row) {
+    table += '<tr>';
+    $.each(data[i], function(k, cell) {
+      var attributes = '';
+      if(k === 0 && data[i].length < columnCount) {
+        attributes = ' colspan="'+(columnCount - data[i].length + 1)+'"';
+      }
+      table += '<td'+attributes+'>'+cell+'</td>';
+    });
+    table += '</tr>';
+  });
+  table += '</table>';
+  return table;
+}
+
+// Given 3 sets of points in an array[3]{lat, lng} returns the area of the triangle
+window.calcTriArea = function(p) {
+  return Math.abs((p[0].lat*(p[1].lng-p[2].lng)+p[1].lat*(p[2].lng-p[0].lng)+p[2].lat*(p[0].lng-p[1].lng))/2);
+}
+
+
 
 // SETUP /////////////////////////////////////////////////////////////
 // these functions set up specific areas after the boot function
@@ -360,7 +1303,7 @@ window.setupMap = function() {
 
 
   window.map = new L.Map('map', $.extend(getPosition(),
-    {zoomControl: !(localStorage['iitc.zoom.buttons'] === 'false')}
+    {zoomControl: true}
   ));
 
   var addLayers = {};
@@ -695,17 +1638,24 @@ d+"px").css("background-color",a.isDark(e,i)?h.foreground:h.background).appendTo
 function boot() {
   window.debug.console.overwriteNativeIfRequired();
 
-  console.log('loading done, booting. Built: 2013-03-17-082031');
+  console.log('loading done, booting. Built: 2013-04-01-223509');
   if(window.deviceID) console.log('Your device ID: ' + window.deviceID);
   window.runOnSmartphonesBeforeBoot();
 
-  // overwrite default Leaflet Marker icon to be a neutral color
-  var base = 'https://iitcserv.appspot.com/dist/images';
-  L.Icon.Default.imagePath = base;
-  L.Icon.Default.shadowUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAC5ElEQVRYw+2YW4/TMBCF45S0S1luXZCABy5CgLQgwf//S4BYBLTdJLax0fFqmB07nnQfEGqkIydpVH85M+NLjPe++dcPc4Q8Qh4hj5D/AaQJx6H/4TMwB0PeBNwU7EGQAmAtsNfAzoZkgIa0ZgLMa4Aj6CxIAsjhjOCoL5z7Glg1JAOkaicgvQBXuncwJAWjksLtBTWZe04CnYRktUGdilALppZBOgHGZcBzL6OClABvMSVIzyBjazOgrvACf1ydC5mguqAVg6RhdkSWQFj2uxfaq/BrIZOLEWgZdALIDvcMcZLD8ZbLC9de4yR1sYMi4G20S4Q/PWeJYxTOZn5zJXANZHIxAd4JWhPIloTJZhzMQduM89WQ3MUVAE/RnhAXpTycqys3NZALOBbB7kFrgLesQl2h45Fcj8L1tTSohUwuxhy8H/Qg6K7gIs+3kkaigQCOcyEXCHN07wyQazhrmIulvKMQAwMcmLNqyCVyMAI+BuxSMeTk3OPikLY2J1uE+VHQk6ANrhds+tNARqBeaGc72cK550FP4WhXmFmcMGhTwAR1ifOe3EvPqIegFmF+C8gVy0OfAaWQPMR7gF1OQKqGoBjq90HPMP01BUjPOqGFksC4emE48tWQAH0YmvOgF3DST6xieJgHAWxPAHMuNhrImIdvoNOKNWIOcE+UXE0pYAnkX6uhWsgVXDxHdTfCmrEEmMB2zMFimLVOtiiajxiGWrbU52EeCdyOwPEQD8LqyPH9Ti2kgYMf4OhSKB7qYILbBv3CuVTJ11Y80oaseiMWOONc/Y7kJYe0xL2f0BaiFTxknHO5HaMGMublKwxFGzYdWsBF174H/QDknhTHmHHN39iWFnkZx8lPyM8WHfYELmlLKtgWNmFNzQcC1b47gJ4hL19i7o65dhH0Negbca8vONZoP7doIeOC9zXm8RjuL0Gf4d4OYaU5ljo3GYiqzrWQHfJxA6ALhDpVKv9qYeZA8eM3EhfPSCmpuD0AAAAASUVORK5CYII=";
+  var iconDefImage = 'data:image/png;base64,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';
+  var iconDefRetImage = 'data:image/png;base64,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';
+  var iconShadowImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAC5ElEQVRYw+2YW4/TMBCF45S0S1luXZCABy5CgLQgwf//S4BYBLTdJLax0fFqmB07nnQfEGqkIydpVH85M+NLjPe++dcPc4Q8Qh4hj5D/AaQJx6H/4TMwB0PeBNwU7EGQAmAtsNfAzoZkgIa0ZgLMa4Aj6CxIAsjhjOCoL5z7Glg1JAOkaicgvQBXuncwJAWjksLtBTWZe04CnYRktUGdilALppZBOgHGZcBzL6OClABvMSVIzyBjazOgrvACf1ydC5mguqAVg6RhdkSWQFj2uxfaq/BrIZOLEWgZdALIDvcMcZLD8ZbLC9de4yR1sYMi4G20S4Q/PWeJYxTOZn5zJXANZHIxAd4JWhPIloTJZhzMQduM89WQ3MUVAE/RnhAXpTycqys3NZALOBbB7kFrgLesQl2h45Fcj8L1tTSohUwuxhy8H/Qg6K7gIs+3kkaigQCOcyEXCHN07wyQazhrmIulvKMQAwMcmLNqyCVyMAI+BuxSMeTk3OPikLY2J1uE+VHQk6ANrhds+tNARqBeaGc72cK550FP4WhXmFmcMGhTwAR1ifOe3EvPqIegFmF+C8gVy0OfAaWQPMR7gF1OQKqGoBjq90HPMP01BUjPOqGFksC4emE48tWQAH0YmvOgF3DST6xieJgHAWxPAHMuNhrImIdvoNOKNWIOcE+UXE0pYAnkX6uhWsgVXDxHdTfCmrEEmMB2zMFimLVOtiiajxiGWrbU52EeCdyOwPEQD8LqyPH9Ti2kgYMf4OhSKB7qYILbBv3CuVTJ11Y80oaseiMWOONc/Y7kJYe0xL2f0BaiFTxknHO5HaMGMublKwxFGzYdWsBF174H/QDknhTHmHHN39iWFnkZx8lPyM8WHfYELmlLKtgWNmFNzQcC1b47gJ4hL19i7o65dhH0Negbca8vONZoP7doIeOC9zXm8RjuL0Gf4d4OYaU5ljo3GYiqzrWQHfJxA6ALhDpVKv9qYeZA8eM3EhfPSCmpuD0AAAAASUVORK5CYII=';
 
-  window.iconEnl = L.Icon.Default.extend({options: { iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAApCAMAAAD3TXL8AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QISCxI2Wb9jjgAAAj1QTFRFAAAAIT8USosuRYIrVJ81V6M2RYIrU5wzR4UsQ34pRYIrVJ81R4UsSIgtRYIrVqI2R4UsVJ81WKY3SYouR4UsSIgtUpozVaA1VqI2WKY3V6M2VaA1VqI2T5QxR4ctV6M2VJ81R4ctR4ctSosuSosuR4ctVJ81R4ctR4ctR4ctR4ctUZkyR4ctR4ctUpozR4ctR4ctR4ctUJcyR4UsR4ctR4ctVqI2R4ctSosuR4ctVaA1SosuR4ctR4ctV6M2R4ctV6M2T5QxU5wzU5wzSosuSosuSYouSYouVaA1R4ctR4ctVqI2R4ctR4ctR4ctR4ctR4ctWKY3R4ctTZEwR4ctWKY3R4ctR4ctR4ctR4ctS40vVJ81R4ctSosuW6w5R4ctTZEwR4ctT5QxVJ81SosuUZkyU5wzWKY3W6s4R4ctSosuS40vUJcyU5wzVaA1WKY3W6s4R4ctSIgtUZkyVJ81VaA1SYouVaA1WKY3Xa86X7I7Yrg9R4ctSYouV6M2Y7o+VqI2Y7o+Y7o+SosuSosuSYouUJcyVqI2W6s4R4ctSosuTJAwTZEwT5QxUJcyUZkyUpozU5wzVJ81VaA1VqI2V6M2WKY3W6s4W6w5Xa86X7I7X7M8Ybc9Yrg9Y7o+Y7s+ZL0/Zb4/Zr9AaMBDasFEbMJIbcJJbsNLccNOdMVSdsZUd8ZVeMdXecdYfMhbis5ti89vktJ4lNJ5nNaEo9mMptqQrNyXteCjuOGmweWyzerB2e/Q3vHW9vv0+v34wPUZ2wAAAIl0Uk5TAAECAwQEBQYHCAoKDA4PEhMUFRcYGhsiJyctLi88QkJHSktLTlFRUlRWWltdYmVmam5xc3Z4eHuAgoKDhIWIjI+vtL6/wcjKzM3O0tXX3N7i5OXn6Ojp6u3v8PDx8fLz8/T09PX19fX19vb29vb29vb39/f39/j4+Pj4+Pn5+fn6+vv8/f7+/v5w2hyKAAACOklEQVQYGXXBB0MSYRgA4Ddt27A9tb23ZXvZ3suW7UFZZGW2ty2rI47g4D7eW3x8DDlB2zvut3XHiYDa80DO4LETxg+FLsas3e+/fqr29aH14yBf0dJ7D+Optra21uanjSt7QYdR22r1lJ6IRWMJPdVyaedoaDfx1rNUIpKVaH1+dzpkDDkeSUZZTjQZPz8SLBvut4RpBqO2lgcbwTTnts5Cpoie1JN6NGRi+rX5ACUXWFwzxXXZ7xGwuTmkaVqc3SyBsqu6ZopEhQ9/0n8/CSymmfSLZVBRH1cURUuI3wzLj0AipChKvL4CqiQmyzLTpLSRwRQmyzKTqqCaUkmSGH40bF9IRJIkSqvhJFURkQU/G7avhCGiSo/BZqSISCVm2JJIEZHiJljVyBBRYvwvw/LbTRVEZE+Ww9RzLGii6PqeNtI/eaRBEzszBUa8pEhMYYXnRM4tMWLC8IthAFuJKloUpkkaU0WL+mYLAMxyhEVbEIOiLeyYBgC9axDFQoiHi8G0pk4LFBBDdUvAMvwREiEfwRulkLGuThXyqVdWg630MiG+HELODoJ2K5yKz5vlUxzLIGvgaSK+zyLiiQHQodKJHt7mRcdiyOlf4xd5m+g/2g/yLHIi77bw6FwI+foeEYR3loBwsA8UWOAkvMvl4olzHhTqecArcBwnePcVQydznaKLc4kNs6Gzor0eL+fz7CmCLmY2BNyBhhnQVY/dTYGmXdCdyXeEx5OgWztebYfulb8th/+ohDz/AK0XbZm+r4OkAAAAAElFTkSuQmCC', shadowUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAC5ElEQVRYw+2YW4/TMBCF45S0S1luXZCABy5CgLQgwf//S4BYBLTdJLax0fFqmB07nnQfEGqkIydpVH85M+NLjPe++dcPc4Q8Qh4hj5D/AaQJx6H/4TMwB0PeBNwU7EGQAmAtsNfAzoZkgIa0ZgLMa4Aj6CxIAsjhjOCoL5z7Glg1JAOkaicgvQBXuncwJAWjksLtBTWZe04CnYRktUGdilALppZBOgHGZcBzL6OClABvMSVIzyBjazOgrvACf1ydC5mguqAVg6RhdkSWQFj2uxfaq/BrIZOLEWgZdALIDvcMcZLD8ZbLC9de4yR1sYMi4G20S4Q/PWeJYxTOZn5zJXANZHIxAd4JWhPIloTJZhzMQduM89WQ3MUVAE/RnhAXpTycqys3NZALOBbB7kFrgLesQl2h45Fcj8L1tTSohUwuxhy8H/Qg6K7gIs+3kkaigQCOcyEXCHN07wyQazhrmIulvKMQAwMcmLNqyCVyMAI+BuxSMeTk3OPikLY2J1uE+VHQk6ANrhds+tNARqBeaGc72cK550FP4WhXmFmcMGhTwAR1ifOe3EvPqIegFmF+C8gVy0OfAaWQPMR7gF1OQKqGoBjq90HPMP01BUjPOqGFksC4emE48tWQAH0YmvOgF3DST6xieJgHAWxPAHMuNhrImIdvoNOKNWIOcE+UXE0pYAnkX6uhWsgVXDxHdTfCmrEEmMB2zMFimLVOtiiajxiGWrbU52EeCdyOwPEQD8LqyPH9Ti2kgYMf4OhSKB7qYILbBv3CuVTJ11Y80oaseiMWOONc/Y7kJYe0xL2f0BaiFTxknHO5HaMGMublKwxFGzYdWsBF174H/QDknhTHmHHN39iWFnkZx8lPyM8WHfYELmlLKtgWNmFNzQcC1b47gJ4hL19i7o65dhH0Negbca8vONZoP7doIeOC9zXm8RjuL0Gf4d4OYaU5ljo3GYiqzrWQHfJxA6ALhDpVKv9qYeZA8eM3EhfPSCmpuD0AAAAASUVORK5CYII=" } });
-  window.iconRes = L.Icon.Default.extend({options: { iconUrl: 'data:image/png;base64,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', shadowUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAC5ElEQVRYw+2YW4/TMBCF45S0S1luXZCABy5CgLQgwf//S4BYBLTdJLax0fFqmB07nnQfEGqkIydpVH85M+NLjPe++dcPc4Q8Qh4hj5D/AaQJx6H/4TMwB0PeBNwU7EGQAmAtsNfAzoZkgIa0ZgLMa4Aj6CxIAsjhjOCoL5z7Glg1JAOkaicgvQBXuncwJAWjksLtBTWZe04CnYRktUGdilALppZBOgHGZcBzL6OClABvMSVIzyBjazOgrvACf1ydC5mguqAVg6RhdkSWQFj2uxfaq/BrIZOLEWgZdALIDvcMcZLD8ZbLC9de4yR1sYMi4G20S4Q/PWeJYxTOZn5zJXANZHIxAd4JWhPIloTJZhzMQduM89WQ3MUVAE/RnhAXpTycqys3NZALOBbB7kFrgLesQl2h45Fcj8L1tTSohUwuxhy8H/Qg6K7gIs+3kkaigQCOcyEXCHN07wyQazhrmIulvKMQAwMcmLNqyCVyMAI+BuxSMeTk3OPikLY2J1uE+VHQk6ANrhds+tNARqBeaGc72cK550FP4WhXmFmcMGhTwAR1ifOe3EvPqIegFmF+C8gVy0OfAaWQPMR7gF1OQKqGoBjq90HPMP01BUjPOqGFksC4emE48tWQAH0YmvOgF3DST6xieJgHAWxPAHMuNhrImIdvoNOKNWIOcE+UXE0pYAnkX6uhWsgVXDxHdTfCmrEEmMB2zMFimLVOtiiajxiGWrbU52EeCdyOwPEQD8LqyPH9Ti2kgYMf4OhSKB7qYILbBv3CuVTJ11Y80oaseiMWOONc/Y7kJYe0xL2f0BaiFTxknHO5HaMGMublKwxFGzYdWsBF174H/QDknhTHmHHN39iWFnkZx8lPyM8WHfYELmlLKtgWNmFNzQcC1b47gJ4hL19i7o65dhH0Negbca8vONZoP7doIeOC9zXm8RjuL0Gf4d4OYaU5ljo3GYiqzrWQHfJxA6ALhDpVKv9qYeZA8eM3EhfPSCmpuD0AAAAASUVORK5CYII=" } });
+  L.Icon.Default = L.Icon.extend({options: {
+    iconUrl: iconDefImage,
+    iconRetinaUrl: iconDefRetImage,
+    shadowUrl: iconShadowImage,
+    shadowRetinaUrl: iconShadowImage,
+    iconSize: new L.Point(25, 41),
+    iconAnchor: new L.Point(12, 41),
+    popupAnchor: new L.Point(1, -34),
+    shadowSize: new L.Point(41, 41)
+  }});
 
   window.setupTaphold();
   window.setupStyles();
@@ -954,26 +1904,6 @@ L.Google = L.Class.extend({
 
 }).call(this);
 
-(function(){/*
- OverlappingMarkerSpiderfier
-https://github.com/jawj/OverlappingMarkerSpiderfier-Leaflet
-Copyright (c) 2011 - 2012 George MacKerron
-Released under the MIT licence: http://opensource.org/licenses/mit-license
-Note: The Leaflet maps API must be included *before* this code
-*/
-(function(){var n={}.hasOwnProperty,o=[].slice;null!=this.L&&(this.OverlappingMarkerSpiderfier=function(){function l(c,b){var a,e,g,f,d=this;this.map=c;null==b&&(b={});for(a in b)n.call(b,a)&&(e=b[a],this[a]=e);this.initMarkerArrays();this.listeners={};f=["click","zoomend"];e=0;for(g=f.length;e<g;e++)a=f[e],this.map.addEventListener(a,function(){return d.unspiderfy()})}var d,i;d=l.prototype;d.VERSION="0.2.5";i=2*Math.PI;d.keepSpiderfied=!1;d.nearbyDistance=20;d.circleSpiralSwitchover=9;d.circleFootSeparation=
-25;d.circleStartAngle=i/12;d.spiralFootSeparation=28;d.spiralLengthStart=11;d.spiralLengthFactor=5;d.legWeight=1.5;d.legColors={usual:"#222",highlighted:"#f00"};d.initMarkerArrays=function(){this.markers=[];return this.markerListeners=[]};d.addMarker=function(c){var b,a=this;if(null!=c._oms)return this;c._oms=!0;b=function(){return a.spiderListener(c)};c.addEventListener("click",b);this.markerListeners.push(b);this.markers.push(c);return this};d.getMarkers=function(){return this.markers.slice(0)};
-d.removeMarker=function(c){var b,a;null!=c._omsData&&this.unspiderfy();b=this.arrIndexOf(this.markers,c);if(0>b)return this;a=this.markerListeners.splice(b,1)[0];c.removeEventListener("click",a);delete c._oms;this.markers.splice(b,1);return this};d.clearMarkers=function(){var c,b,a,e,g;this.unspiderfy();g=this.markers;c=a=0;for(e=g.length;a<e;c=++a)b=g[c],c=this.markerListeners[c],b.removeEventListener("click",c),delete b._oms;this.initMarkerArrays();return this};d.addListener=function(c,b){var a,
-e;(null!=(e=(a=this.listeners)[c])?e:a[c]=[]).push(b);return this};d.removeListener=function(c,b){var a;a=this.arrIndexOf(this.listeners[c],b);0>a||this.listeners[c].splice(a,1);return this};d.clearListeners=function(c){this.listeners[c]=[];return this};d.trigger=function(){var c,b,a,e,g,f;b=arguments[0];c=2<=arguments.length?o.call(arguments,1):[];b=null!=(a=this.listeners[b])?a:[];f=[];e=0;for(g=b.length;e<g;e++)a=b[e],f.push(a.apply(null,c));return f};d.generatePtsCircle=function(c,b){var a,e,
-g,f,d;g=this.circleFootSeparation*(2+c)/i;e=i/c;d=[];for(a=f=0;0<=c?f<c:f>c;a=0<=c?++f:--f)a=this.circleStartAngle+a*e,d.push(new L.Point(b.x+g*Math.cos(a),b.y+g*Math.sin(a)));return d};d.generatePtsSpiral=function(c,b){var a,e,g,f,d;g=this.spiralLengthStart;a=0;d=[];for(e=f=0;0<=c?f<c:f>c;e=0<=c?++f:--f)a+=this.spiralFootSeparation/g+5.0E-4*e,e=new L.Point(b.x+g*Math.cos(a),b.y+g*Math.sin(a)),g+=i*this.spiralLengthFactor/a,d.push(e);return d};d.spiderListener=function(c){var b,a,e,g,f,d,h,i,j;b=
-null!=c._omsData;(!b||!this.keepSpiderfied)&&this.unspiderfy();if(b)return this.trigger("click",c);g=[];f=[];d=this.nearbyDistance*this.nearbyDistance;e=this.map.latLngToLayerPoint(c.getLatLng());j=this.markers;h=0;for(i=j.length;h<i;h++)b=j[h],a=this.map.latLngToLayerPoint(b.getLatLng()),this.ptDistanceSq(a,e)<d?g.push({marker:b,markerPt:a}):f.push(b);return 1===g.length?this.trigger("click",c):this.spiderfy(g,f)};d.makeHighlightListeners=function(c){var b=this;return{highlight:function(){return c._omsData.leg.setStyle({color:b.legColors.highlighted})},
-unhighlight:function(){return c._omsData.leg.setStyle({color:b.legColors.usual})}}};d.spiderfy=function(c,b){var a,e,g,d,m,h,i,j,l,k;this.spiderfying=!0;k=c.length;a=this.ptAverage(function(){var a,b,e;e=[];a=0;for(b=c.length;a<b;a++)i=c[a],e.push(i.markerPt);return e}());d=k>=this.circleSpiralSwitchover?this.generatePtsSpiral(k,a).reverse():this.generatePtsCircle(k,a);a=function(){var a,b,i,k=this;i=[];a=0;for(b=d.length;a<b;a++)g=d[a],e=this.map.layerPointToLatLng(g),l=this.minExtract(c,function(a){return k.ptDistanceSq(a.markerPt,
-g)}),h=l.marker,m=new L.Polyline([h.getLatLng(),e],{color:this.legColors.usual,weight:this.legWeight,clickable:!1}),this.map.addLayer(m),h._omsData={usualPosition:h.getLatLng(),leg:m},this.legColors.highlighted!==this.legColors.usual&&(j=this.makeHighlightListeners(h),h._omsData.highlightListeners=j,h.addEventListener("mouseover",j.highlight),h.addEventListener("mouseout",j.unhighlight)),h.setLatLng(e),h.setZIndexOffset(1E6),i.push(h);return i}.call(this);delete this.spiderfying;this.spiderfied=!0;
-return this.trigger("spiderfy",a,b)};d.unspiderfy=function(c){var b,a,e,d,f,i,h;null==c&&(c=null);if(null==this.spiderfied)return this;this.unspiderfying=!0;d=[];e=[];h=this.markers;f=0;for(i=h.length;f<i;f++)b=h[f],null!=b._omsData?(this.map.removeLayer(b._omsData.leg),b!==c&&b.setLatLng(b._omsData.usualPosition),b.setZIndexOffset(0),a=b._omsData.highlightListeners,null!=a&&(b.removeEventListener("mouseover",a.highlight),b.removeEventListener("mouseout",a.unhighlight)),delete b._omsData,d.push(b)):
-e.push(b);delete this.unspiderfying;delete this.spiderfied;this.trigger("unspiderfy",d,e);return this};d.ptDistanceSq=function(c,b){var a,e;a=c.x-b.x;e=c.y-b.y;return a*a+e*e};d.ptAverage=function(c){var b,a,e,d,f;d=a=e=0;for(f=c.length;d<f;d++)b=c[d],a+=b.x,e+=b.y;c=c.length;return new L.Point(a/c,e/c)};d.minExtract=function(c,b){var a,d,g,f,i,h;g=i=0;for(h=c.length;i<h;g=++i)if(f=c[g],f=b(f),!("undefined"!==typeof a&&null!==a)||f<d)d=f,a=g;return c.splice(a,1)[0]};d.arrIndexOf=function(c,b){var a,
-d,g,f;if(null!=c.indexOf)return c.indexOf(b);a=g=0;for(f=c.length;g<f;a=++g)if(d=c[a],d===b)return a;return-1};return l}())}).call(this);}).call(this);
-/* Sun 6 May 2012 17:49:10 BST */
-
 
 try { console.log('done loading included JS'); } catch(e) {}
 
@@ -982,6 +1912,318 @@ var JQUERYUI = 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.
 
 // after all scripts have loaded, boot the actual app
 load(JQUERY).then(JQUERYUI).thenRun(boot);
+
+
+// PORTAL DETAILS MAIN ///////////////////////////////////////////////
+// main code block that renders the portal details in the sidebar and
+// methods that highlight the portal in the map view.
+
+window.renderPortalDetails = function(guid) {
+  if(!window.portals[guid]) {
+    unselectOldPortal();
+    urlPortal = guid;
+    return;
+  }
+
+  var d = window.portals[guid].options.details;
+
+  selectPortal(guid);
+
+  // collect some random data that’s not worth to put in an own method
+  var links = {incoming: 0, outgoing: 0};
+  if(d.portalV2.linkedEdges) $.each(d.portalV2.linkedEdges, function(ind, link) {
+    links[link.isOrigin ? 'outgoing' : 'incoming']++;
+  });
+  function linkExpl(t) { return '<tt title="↳ incoming links\n↴ outgoing links\n• is meant to be the portal.">'+t+'</tt>'; }
+  var linksText = [linkExpl('links'), linkExpl(' ↳ ' + links.incoming+'&nbsp;&nbsp;•&nbsp;&nbsp;'+links.outgoing+' ↴')];
+
+  var player = d.captured && d.captured.capturingPlayerId
+    ? '<span class="nickname">' + getPlayerName(d.captured.capturingPlayerId) + '</span>'
+    : null;
+  var playerText = player ? ['owner', player] : null;
+
+  var time = d.captured
+    ? '<span title="' + unixTimeToString(d.captured.capturedTime, true) + '">'
+      +  unixTimeToString(d.captured.capturedTime) + '</span>'
+    : null;
+  var sinceText  = time ? ['since', time] : null;
+
+  var linkedFields = ['fields', d.portalV2.linkedFields.length];
+
+  // collect and html-ify random data
+  var randDetails = [
+    playerText, sinceText, getRangeText(d), getEnergyText(d),
+    linksText, getAvgResoDistText(d), linkedFields, getAttackApGainText(d)
+  ];
+  randDetails = '<table id="randdetails">' + genFourColumnTable(randDetails) + '</table>';
+
+  var resoDetails = '<table id="resodetails">' + getResonatorDetails(d) + '</table>';
+
+  setPortalIndicators(d);
+  var img = d.imageByUrl && d.imageByUrl.imageUrl
+    ? d.imageByUrl.imageUrl
+    : DEFAULT_PORTAL_IMG;
+
+  var lat = d.locationE6.latE6;
+  var lng = d.locationE6.lngE6;
+  var perma = 'https://ingress.com/intel?latE6='+lat+'&lngE6='+lng+'&z=17&pguid='+guid;
+  var imgTitle = 'title="'+getPortalDescriptionFromDetails(d)+'\n\nClick to show full image."';
+  var poslinks = 'window.showPortalPosLinks('+lat/1E6+','+lng/1E6+',\'' + d.portalV2.descriptiveText.TITLE + '\')';
+  var postcard = 'Send in a postcard. Will put it online after receiving. Address:\\n\\nStefan Breunig\\nINF 305 – R045\\n69120 Heidelberg\\nGermany';
+
+  $('#portaldetails')
+    .attr('class', TEAM_TO_CSS[getTeam(d)])
+    .html(''
+      + '<h3>'+d.portalV2.descriptiveText.TITLE+'</h3>'
+      // help cursor via “.imgpreview img”
+      + '<div class="imgpreview" '+imgTitle+' style="background-image: url('+img+')">'
+      + '<img class="hide" src="'+img+'"/>'
+      + '<span id="level">'+Math.floor(getPortalLevel(d))+'</span>'
+      + '</div>'
+      + '<div class="mods">'+getModDetails(d)+'</div>'
+      + randDetails
+      + resoDetails
+      + '<div class="linkdetails"><aside><a href="'+perma+'" onclick="return androidCopy(this.href)" >portal link</a></aside>'
+      + '<aside><a onclick="'+poslinks+'">poslinks</a></aside>'
+      + '<aside><a onclick="alert(\''+postcard+'\');">donate</a></aside>'
+      + '<aside><a onclick="window.reportPortalIssue()">report issue</a></aside>'
+      + '</div>'
+    );
+
+  // try to resolve names that were required for above functions, but
+  // weren’t available yet.
+  resolvePlayerNames();
+
+  runHooks('portalDetailsUpdated', {portalDetails: d});
+}
+
+// draws link-range and hack-range circles around the portal with the
+// given details.
+window.setPortalIndicators = function(d) {
+  if(portalRangeIndicator) map.removeLayer(portalRangeIndicator);
+  var range = getPortalRange(d);
+  var coord = [d.locationE6.latE6/1E6, d.locationE6.lngE6/1E6];
+  portalRangeIndicator = (range > 0
+      ? L.circle(coord, range, { fill: false, color: RANGE_INDICATOR_COLOR, weight: 3, clickable: false })
+      : L.circle(coord, range, { fill: false, stroke: false, clickable: false })
+    ).addTo(map);
+  if(!portalAccessIndicator)
+    portalAccessIndicator = L.circle(coord, HACK_RANGE,
+      { fill: false, color: ACCESS_INDICATOR_COLOR, weight: 2, clickable: false }
+    ).addTo(map);
+  else
+    portalAccessIndicator.setLatLng(coord);
+
+}
+
+// highlights portal with given GUID. Automatically clears highlights
+// on old selection. Returns false if the selected portal changed.
+// Returns true if it’s still the same portal that just needs an
+// update.
+window.selectPortal = function(guid) {
+  var update = selectedPortal === guid;
+  var oldPortal = portals[selectedPortal];
+  if(!update && oldPortal) portalResetColor(oldPortal);
+
+  selectedPortal = guid;
+
+  if(portals[guid]) {
+    resonatorsSetSelectStyle(guid);
+    portals[guid].bringToFront().setStyle({color: COLOR_SELECTED_PORTAL});
+  }
+
+  return update;
+}
+
+
+window.unselectOldPortal = function() {
+  var oldPortal = portals[selectedPortal];
+  if(oldPortal) portalResetColor(oldPortal);
+  selectedPortal = null;
+  $('#portaldetails').html('');
+}
+
+
+
+// GEOSEARCH /////////////////////////////////////////////////////////
+
+window.setupGeosearch = function() {
+  $('#geosearch').keypress(function(e) {
+    if((e.keyCode ? e.keyCode : e.which) != 13) return;
+    $.getJSON(NOMINATIM + encodeURIComponent($(this).val()), function(data) {
+      if(!data || !data[0]) return;
+      var b = data[0].boundingbox;
+      if(!b) return;
+      var southWest = new L.LatLng(b[0], b[2]),
+          northEast = new L.LatLng(b[1], b[3]),
+          bounds = new L.LatLngBounds(southWest, northEast);
+      window.map.fitBounds(bounds);
+      if(window.isSmartphone()) window.smartphone.mapButton.click();
+    });
+    e.preventDefault();
+  });
+}
+
+
+
+
+// MAP DATA REQUEST CALCULATORS //////////////////////////////////////
+// Ingress Intel splits up requests for map data (portals, links,
+// fields) into tiles. To get data for the current viewport (i.e. what
+// is currently visible) it first calculates which tiles intersect.
+// For all those tiles, it then calculates the lat/lng bounds of that
+// tile and a quadkey. Both the bounds and the quadkey are “somewhat”
+// required to get complete data. No idea how the projection between
+// lat/lng and tiles works.
+// What follows now are functions that allow conversion between tiles
+// and lat/lng as well as calculating the quad key. The variable names
+// may be misleading.
+// The minified source for this code was in gen_dashboard.js after the
+// “// input 89” line (alternatively: the class was called “Xe”).
+
+window.convertCenterLat = function(centerLat) {
+  return Math.round(256 * 0.9999 * Math.abs(1 / Math.cos(centerLat * DEG2RAD)));
+}
+
+window.calculateR = function(convCenterLat) {
+  return 1 << window.map.getZoom() - (convCenterLat / 256 - 1);
+}
+
+window.convertLatLngToPoint = function(latlng, magic, R) {
+  var x = (magic/2 + latlng.lng * magic / 360)*R;
+  var l = Math.sin(latlng.lat * DEG2RAD);
+  var y =  (magic/2 + 0.5*Math.log((1+l)/(1-l)) * -(magic / (2*Math.PI)))*R;
+  return {x: Math.floor(x/magic), y: Math.floor(y/magic)};
+}
+
+window.convertPointToLatLng = function(x, y, magic, R) {
+  var e = {};
+  e.sw = {
+    // orig function put together from all over the place
+    // lat: (2 * Math.atan(Math.exp((((y + 1) * magic / R) - (magic/ 2)) / (-1*(magic / (2 * Math.PI))))) - Math.PI / 2) / (Math.PI / 180),
+    // shortened version by your favorite algebra program.
+    lat: (360*Math.atan(Math.exp(Math.PI - 2*Math.PI*(y+1)/R)))/Math.PI - 90,
+    lng: 360*x/R-180
+  };
+  e.ne = {
+    //lat: (2 * Math.atan(Math.exp(((y * magic / R) - (magic/ 2)) / (-1*(magic / (2 * Math.PI))))) - Math.PI / 2) / (Math.PI / 180),
+    lat: (360*Math.atan(Math.exp(Math.PI - 2*Math.PI*y/R)))/Math.PI - 90,
+    lng: 360*(x+1)/R-180
+  };
+  return e;
+}
+
+// calculates the quad key for a given point. The point is not(!) in
+// lat/lng format.
+window.pointToQuadKey = function(x, y) {
+  var quadkey = [];
+  for(var c = window.map.getZoom(); c > 0; c--) {
+    //  +-------+   quadrants are probably ordered like this
+    //  | 0 | 1 |
+    //  |---|---|
+    //  | 2 | 3 |
+    //  |---|---|
+    var quadrant = 0;
+    var e = 1 << c - 1;
+    (x & e) != 0 && quadrant++;               // push right
+    (y & e) != 0 && (quadrant++, quadrant++); // push down
+    quadkey.push(quadrant);
+  }
+  return quadkey.join("");
+}
+
+// given quadkey and bounds, returns the format as required by the
+// Ingress API to request map data.
+window.generateBoundsParams = function(quadkey, bounds) {
+  return {
+    id: quadkey,
+    qk: quadkey,
+    minLatE6: Math.round(bounds.sw.lat * 1E6),
+    minLngE6: Math.round(bounds.sw.lng * 1E6),
+    maxLatE6: Math.round(bounds.ne.lat * 1E6),
+    maxLngE6: Math.round(bounds.ne.lng * 1E6)
+  };
+}
+
+
+// PLAYER NAMES //////////////////////////////////////////////////////
+// Player names are cached in local storage forever. There is no GUI
+// element from within the total conversion to clean them, but you
+// can run localStorage.clean() to reset it.
+
+
+// retrieves player name by GUID. If the name is not yet available, it
+// will be added to a global list of GUIDs that need to be resolved.
+// The resolve method is not called automatically.
+window.getPlayerName = function(guid) {
+  if(localStorage[guid]) return localStorage[guid];
+  // only add to queue if it isn’t already
+  if(playersToResolve.indexOf(guid) === -1 && playersInResolving.indexOf(guid) === -1) {
+    console.log('resolving player guid=' + guid);
+    playersToResolve.push(guid);
+  }
+  return '{'+guid.slice(0, 12)+'}';
+}
+
+window.playerNameToGuid = function(playerName){
+  var guid = null;
+  $.each(Object.keys(localStorage), function(ind,key) {
+    if(playerName === localStorage[key]) {
+      guid = key;
+      return false;
+    }
+  });
+  return guid;
+}
+
+// resolves all player GUIDs that have been added to the list. Reruns
+// renderPortalDetails when finished, so that then-unresolved names
+// get replaced by their correct versions.
+window.resolvePlayerNames = function() {
+  if(window.playersToResolve.length === 0) return;
+  var p = window.playersToResolve;
+  var d = {guids: p};
+  playersInResolving = window.playersInResolving.concat(p);
+  playersToResolve = [];
+  postAjax('getPlayersByGuids', d, function(dat) {
+    $.each(dat.result, function(ind, player) {
+      window.setPlayerName(player.guid, player.nickname);
+      // remove from array
+      window.playersInResolving.splice(window.playersInResolving.indexOf(player.guid), 1);
+    });
+    if(window.selectedPortal)
+      window.renderPortalDetails(window.selectedPortal);
+  },
+  function() {
+    // append failed resolves to the list again
+    console.warn('resolving player guids failed: ' + p.join(', '));
+    window.playersToResolve.concat(p);
+  });
+}
+
+
+window.setPlayerName = function(guid, nick) {
+  if($.trim(('' + nick)).slice(0, 5) === '{"L":' && !window.alertFor37WasShown) {
+    window.alertFor37WasShown = true;
+    alert('You have run into bug #37. Please help me solve it!\nCopy and paste this text and post it here:\nhttps://github.com/breunigs/ingress-intel-total-conversion/issues/37\nIf copy & pasting doesn’t work, make a screenshot instead.\n\n\n' + window.debug.printStackTrace() + '\n\n\n' + JSON.stringify(nick));
+  }
+  localStorage[guid] = nick;
+}
+
+
+window.loadPlayerNamesForPortal = function(portal_details) {
+  if(map.getZoom() < PRECACHE_PLAYER_NAMES_ZOOM) return;
+  var e = portal_details;
+
+  if(e.captured && e.captured.capturingPlayerId)
+    getPlayerName(e.captured.capturingPlayerId);
+
+  if(!e.resonatorArray || !e.resonatorArray.resonators) return;
+
+  $.each(e.resonatorArray.resonators, function(ind, reso) {
+    if(reso) getPlayerName(reso.ownerGuid);
+  });
+}
 
 
 window.chat = function() {};
@@ -1012,7 +2254,8 @@ window.chat.handleTabCompletion = function() {
 
   var posStart = curPos - word.length;
   var newText = text.substring(0, posStart);
-  newText += nick + (posStart === 0 ? ': ' : ' ');
+  var atPresent = text.substring(posStart-1, posStart) === '@';
+  newText += (atPresent ? '' : '@') + nick + ' ';
   newText += text.substring(curPos);
   el.val(newText);
 }
@@ -1241,6 +2484,7 @@ window.chat.writeDataToHash = function(newData, storageHash, skipSecureMsgs) {
     if(json[0] in storageHash) return true;
 
     var skipThisEntry = false;
+    var msgToPlayer = false;
 
     var time = json[1];
     var team = json[2].plext.team === 'ALIENS' ? TEAM_ENL : TEAM_RES;
@@ -1261,8 +2505,17 @@ window.chat.writeDataToHash = function(newData, storageHash, skipSecureMsgs) {
         break;
 
       case 'TEXT':
-        var tmp = $('<div/>').text(markup[1].plain).html().autoLink();
-        msg += tmp.replace(window.PLAYER['nickMatcher'], '<em>$1</em>');
+        msg += $('<div/>').text(markup[1].plain).html().autoLink();
+        break;
+
+      case 'AT_PLAYER':
+        var thisToPlayer = (markup[1].plain == ('@'+window.PLAYER.nickname));
+        var spanClass = thisToPlayer ? "pl_nudge_me" : (markup[1].team + " pl_nudge_player");
+        msg += $('<div/>').html($('<span/>')
+                          .attr('class', spanClass)
+                          .attr('onclick',"window.chat.addNickname('"+markup[1].plain+"')")
+                          .text(markup[1].plain)).html();
+        msgToPlayer = msgToPlayer || thisToPlayer;
         break;
 
       case 'PORTAL':
@@ -1287,7 +2540,7 @@ window.chat.writeDataToHash = function(newData, storageHash, skipSecureMsgs) {
     if(skipThisEntry) return true;
 
     // format: timestamp, autogenerated, HTML message, player guid
-    storageHash[json[0]] = [json[1], auto, chat.renderMsg(msg, nick, time, team), pguid];
+    storageHash[json[0]] = [json[1], auto, chat.renderMsg(msg, nick, time, team, msgToPlayer), pguid];
 
     window.setPlayerName(pguid, nick); // free nick name resolves
   });
@@ -1337,16 +2590,27 @@ window.chat.renderDivider = function(text) {
 }
 
 
-window.chat.renderMsg = function(msg, nick, time, team) {
+window.chat.renderMsg = function(msg, nick, time, team, msgToPlayer) {
   var ta = unixTimeToHHmm(time);
   var tb = unixTimeToString(time, true);
   // help cursor via “#chat time”
   var t = '<time title="'+tb+'" data-timestamp="'+time+'">'+ta+'</time>';
-  var s = 'style="color:'+COLORS[team]+'"';
+  if ( msgToPlayer )
+  {
+      t = '<div class="pl_nudge_date">' + t + '</div><div class="pl_nudge_pointy_spacer"></div>';
+  }
+  var s = 'style="cursor:pointer; color:'+COLORS[team]+'"';
   var title = nick.length >= 8 ? 'title="'+nick+'" class="help"' : '';
   var i = ['<span class="invisep">&lt;</span>', '<span class="invisep">&gt;</span>'];
-  return '<tr><td>'+t+'</td><td>'+i[0]+'<mark class="nickname" '+s+'>'+nick+'</mark>'+i[1]+'</td><td>'+msg+'</td></tr>';
+  return '<tr><td>'+t+'</td><td>'+i[0]+'<mark class="nickname" onclick="window.chat.addNickname(\'@' + nick + '\')" ' + s + '>'+ nick+'</mark>'+i[1]+'</td><td>'+msg+'</td></tr>';
 }
+
+window.chat.addNickname= function(nick){
+    var c = document.getElementById("chattext");
+    c.value = [c.value, nick, " "].join(" ").trim() + " ";
+    c.focus()
+}
+
 
 
 
@@ -1601,267 +2865,96 @@ window.chat.postMsg = function() {
 
 
 
-// DEBUGGING TOOLS ///////////////////////////////////////////////////
-// meant to be used from browser debugger tools and the like.
 
-window.debug = function() {}
+// REDEEMING /////////////////////////////////////////////////////////
 
-window.debug.renderDetails = function() {
-  console.log('portals: ' + Object.keys(portals).length);
-  console.log('links:   ' + Object.keys(links).length);
-  console.log('fields:  ' + Object.keys(fields).length);
-}
-
-window.debug.printStackTrace = function() {
-  var e = new Error('dummy');
-  console.log(e.stack);
-  return e.stack;
-}
-
-window.debug.clearPortals = function() {
-  for(var i = 0; i < portalsLayers.length; i++)
-    portalsLayers[i].clearLayers();
-}
-
-window.debug.clearLinks = function() {
-  linksLayer.clearLayers();
-}
-
-window.debug.clearFields = function() {
-  fieldsLayer.clearLayers();
-}
-
-window.debug.getFields = function() {
-  return fields;
-}
-
-window.debug.forceSync = function() {
-  localStorage.clear();
-  window.playersToResolve = [];
-  window.playersInResolving = [];
-  debug.clearFields();
-  debug.clearLinks();
-  debug.clearPortals();
-  updateGameScore();
-  requestData();
-}
-
-window.debug.console = function() {
-  $('#debugconsole').text();
-}
-
-window.debug.console.create = function() {
-  if($('#debugconsole').length) return;
-  $('#chatcontrols').append('<a>debug</a>');
-  $('#chatcontrols a:last').click(function() {
-    $('#chatinput mark').css('cssText', 'color: #bbb !important').text('debug:');
-    $('#chat > div').hide();
-    $('#debugconsole').show();
-    $('#chatcontrols .active').removeClass('active');
-    $(this).addClass('active');
-  });
-  $('#chat').append('<div style="display: none" id="debugconsole"><table></table></div>');
-}
-
-window.debug.console.renderLine = function(text, errorType) {
-  debug.console.create();
-  switch(errorType) {
-    case 'error':   var color = '#FF424D'; break;
-    case 'warning': var color = '#FFDE42'; break;
-    default:        var color = '#eee';
-  }
-  if(typeof text !== 'string' && typeof text !== 'number') {
-    var cache = [];
-    text = JSON.stringify(text, function(key, value) {
-      if(typeof value === 'object' && value !== null) {
-        if(cache.indexOf(value) !== -1) {
-          // Circular reference found, discard key
-          return;
+window.handleRedeemResponse = function(data, textStatus, jqXHR) {
+  if(data.error) {
+    var error = '';
+    if(data.error === 'ALREADY_REDEEMED') {
+      error = 'The passcode has already been redeemed.';
+    } else if(data.error === 'ALREADY_REDEEMED_BY_PLAYER') {
+      error = 'You have already redeemed this passcode.';
+    } else if(data.error === 'INVALID_PASSCODE') {
+      error = 'This passcode is invalid.';
+    } else {
+      error = 'There was a problem redeeming the passcode. Try again?';
+    }
+    alert('<strong>' + data.error + '</strong>\n' + error);
+  } else if(data.result) {
+    var tblResult = $('<table class="redeem-result" />');
+    tblResult.append($('<tr><th colspan="2">Passcode accepted!</th></tr>'));
+  
+    if(data.result.apAward)
+      tblResult.append($('<tr><td>+</td><td>' + data.result.apAward + 'AP</td></tr>'));
+    if(data.result.xmAward)
+      tblResult.append($('<tr><td>+</td><td>' + data.result.xmAward + 'XM</td></tr>'));
+  
+    var resonators = {};
+    var bursts = {};
+    var shields = {};
+     
+    for(var i in data.result.inventoryAward) {
+      var acquired = data.result.inventoryAward[i][2];
+      if(acquired.modResource) {
+        if(acquired.modResource.resourceType === 'RES_SHIELD') {
+          var rarity = acquired.modResource.rarity.split('_').map(function (i) {return i[0]}).join('');
+          if(!shields[rarity]) shields[rarity] = 0;
+          shields[rarity] += 1;
         }
-        // Store value in our collection
-        cache.push(value);
+      } else if(acquired.resourceWithLevels) {
+        if(acquired.resourceWithLevels.resourceType === 'EMITTER_A') {
+          var level = acquired.resourceWithLevels.level
+          if(!resonators[level]) resonators[level] = 0;
+          resonators[level] += 1;
+        } else if(acquired.resourceWithLevels.resourceType === 'EMP_BURSTER') {
+          var level = acquired.resourceWithLevels.level
+          if(!bursts[level]) bursts[level] = 0;
+          bursts[level] += 1;
+        }
       }
-      return value;
+    }
+    
+    $.each(resonators, function(lvl, count) {
+      var text = 'Resonator';
+      if(count >= 2) text += ' ('+count+')';
+      tblResult.append($('<tr ><td style="color: ' +window.COLORS_LVL[lvl]+ ';">L' +lvl+ '</td><td>' + text + '</td></tr>'));
     });
-    cache = null;
+    $.each(bursts, function(lvl, count) {
+      var text = 'Xmp Burster';
+      if(count >= 2) text += ' ('+count+')';
+      tblResult.append($('<tr ><td style="color: ' +window.COLORS_LVL[lvl]+ ';">L' +lvl+ '</td><td>' + text + '</td></tr>'));
+    });
+    $.each(shields, function(lvl, count) {
+      var text = 'Portal Shield';
+      if(count >= 2) text += ' ('+count+')';
+      tblResult.append($('<tr><td>'+lvl+'</td><td>'+text+'</td></tr>'));
+    });
+
+    alert(tblResult, true);
   }
-  var d = new Date();
-  var ta = d.toLocaleTimeString(); // print line instead maybe?
-  var tb = d.toLocaleString();
-  var t = '<time title="'+tb+'" data-timestamp="'+d.getTime()+'">'+ta+'</time>';
-  var s = 'style="color:'+color+'"';
-  var l = '<tr><td>'+t+'</td><td><mark '+s+'>'+errorType+'</mark></td><td>'+text+'</td></tr>';
-  $('#debugconsole table').prepend(l);
 }
 
-window.debug.console.log = function(text) {
-  debug.console.renderLine(text, 'notice');
-}
-
-window.debug.console.warn = function(text) {
-  debug.console.renderLine(text, 'warning');
-}
-
-window.debug.console.error = function(text) {
-  debug.console.renderLine(text, 'error');
-}
-
-window.debug.console.overwriteNative = function() {
-  window.debug.console.create();
-  window.console = function() {}
-  window.console.log = window.debug.console.log;
-  window.console.warn = window.debug.console.warn;
-  window.console.error = window.debug.console.error;
-}
-
-window.debug.console.overwriteNativeIfRequired = function() {
-  if(!window.console || L.Browser.mobile)
-    window.debug.console.overwriteNative();
-}
-
-
-
-
-// ENTITY DETAILS TOOLS //////////////////////////////////////////////
-// hand any of these functions the details-hash of an entity (i.e.
-// portal, link, field) and they will return useful data.
-
-
-// given the entity detail data, returns the team the entity belongs
-// to. Uses TEAM_* enum values.
-window.getTeam = function(details) {
-  var team = TEAM_NONE;
-  if(details.controllingTeam.team === 'ALIENS') team = TEAM_ENL;
-  if(details.controllingTeam.team === 'RESISTANCE') team = TEAM_RES;
-  return team;
-}
-
-
-
-// GAME STATUS ///////////////////////////////////////////////////////
-// MindUnit display
-window.updateGameScore = function(data) {
-  if(!data) {
-    window.postAjax('getGameScore', {}, window.updateGameScore);
-    return;
-  }
-
-  var r = parseInt(data.result.resistanceScore), e = parseInt(data.result.alienScore);
-  var s = r+e;
-  var rp = r/s*100, ep = e/s*100;
-  r = digits(r), e = digits(e);
-  var rs = '<span class="res" style="width:'+rp+'%;">'+Math.round(rp)+'%&nbsp;</span>';
-  var es = '<span class="enl" style="width:'+ep+'%;">&nbsp;'+Math.round(ep)+'%</span>';
-  $('#gamestat').html(rs+es).one('click', function() { window.updateGameScore() });
-  // help cursor via “#gamestat span”
-  $('#gamestat').attr('title', 'Resistance:\t'+r+' MindUnits\nEnlightened:\t'+e+' MindUnits');
-
-  window.setTimeout('window.updateGameScore', REFRESH_GAME_SCORE*1000);
-}
-
-
-
-// GEOSEARCH /////////////////////////////////////////////////////////
-
-window.setupGeosearch = function() {
-  $('#geosearch').keypress(function(e) {
+window.setupRedeem = function() {
+  $("#redeem").keypress(function(e) {
     if((e.keyCode ? e.keyCode : e.which) != 13) return;
-    $.getJSON(NOMINATIM + encodeURIComponent($(this).val()), function(data) {
-      if(!data || !data[0]) return;
-      var b = data[0].boundingbox;
-      if(!b) return;
-      var southWest = new L.LatLng(b[0], b[2]),
-          northEast = new L.LatLng(b[1], b[3]),
-          bounds = new L.LatLngBounds(southWest, northEast);
-      window.map.fitBounds(bounds);
-      if(window.isSmartphone()) window.smartphone.mapButton.click();
-    });
-    e.preventDefault();
+    var data = {passcode: $(this).val()};
+    window.postAjax('redeemReward', data, window.handleRedeemResponse,
+      function(response) {
+        var extra = '';
+        if(response && response.status) {
+          if(response.status === 429) {
+            extra = 'You have been rate-limited by the server. Wait a bit and try again.';
+          } else {
+            extra = 'The server indicated an error.';
+          }
+          extra += '\nResponse: HTTP <a href="http://httpstatus.es/' + response.status + '" alt="HTTP ' + response.status + '">' + response.status + '</a>.';
+        } else {
+          extra = 'No status code was returned.';
+        }
+        alert('<strong>The HTTP request failed.</strong> ' + extra);
+      });
   });
-}
-
-
-// PLUGIN HOOKS ////////////////////////////////////////////////////////
-// Plugins may listen to any number of events by specifying the name of
-// the event to listen to and handing a function that should be exe-
-// cuted when an event occurs. Callbacks will receive additional data
-// the event created as their first parameter. The value is always a
-// hash that contains more details.
-//
-// For example, this line will listen for portals to be added and print
-// the data generated by the event to the console:
-// window.addHook('portalAdded', function(data) { console.log(data) });
-//
-// Boot hook: booting is handled differently because IITC may not yet
-//            be available. Have a look at the plugins in plugins/. All
-//            code before “// PLUGIN START” and after “// PLUGIN END” is
-//            required to successfully boot the plugin.
-//
-// Here’s more specific information about each event:
-// portalAdded: called when a portal has been received and is about to
-//              be added to its layer group. Note that this does NOT
-//              mean it is already visible or will be, shortly after.
-//              If a portal is added to a hidden layer it may never be
-//              shown at all. Injection point is in
-//              code/map_data.js#renderPortal near the end. Will hand
-//              the Leaflet CircleMarker for the portal in "portal" var.
-// portalDetailsUpdated: fired after the details in the sidebar have
-//              been (re-)rendered Provides data about the portal that
-//              has been selected.
-// publicChatDataAvailable: this hook runs after data for any of the
-//              public chats has been received and processed, but not
-//              yet been displayed. The data hash contains both the un-
-//              processed raw ajax response as well as the processed
-//              chat data that is going to be used for display.
-// factionChatDataAvailable: this hook runs after data for the faction
-//              chat has been received and processed, but not yet been
-//              displayed. The data hash contains both the unprocessed
-//              raw ajax response as well as the processed chat data
-//              that is going to be used for display.
-// portalDataLoaded: callback is passed the argument of
-//              {portals : [portal, portal, ...]} where "portal" is the
-//              data element and not the leaflet object. "portal" is an
-//              array [GUID, time, details]. Plugin can manipulate the
-//              array to change order or add additional values to the
-//              details of a portal.
-// beforePortalReRender: the callback argument is
-//              {portal: ent[2], oldPortal : d, reRender : false}.
-//              The callback needs to update the value of reRender to
-//              true if the plugin has a reason to have the portal
-//              redrawn. It is called early on in the
-//              code/map_data.js#renderPortal as long as there was an
-//              old portal for the guid.
-// checkRenderLimit: callback is passed the argument of
-//              {reached : false} to indicate that the renderlimit is reached
-//              set reached to true.
-// requestFinished: called after each request finished. Argument is
-//              {success: boolean} indicated the request success or fail.
-
-
-
-window._hooks = {}
-window.VALID_HOOKS = ['portalAdded', 'portalDetailsUpdated',
-  'publicChatDataAvailable', 'factionChatDataAvailable', 'portalDataLoaded',
-  'beforePortalReRender', 'checkRenderLimit', 'requestFinished'];
-
-window.runHooks = function(event, data) {
-  if(VALID_HOOKS.indexOf(event) === -1) throw('Unknown event type: ' + event);
-
-  if(!_hooks[event]) return;
-  $.each(_hooks[event], function(ind, callback) {
-    callback(data);
-  });
-}
-
-
-window.addHook = function(event, callback) {
-  if(VALID_HOOKS.indexOf(event) === -1) throw('Unknown event type: ' + event);
-  if(typeof callback !== 'function') throw('Callback must be a function.');
-
-  if(!_hooks[event])
-    _hooks[event] = [callback];
-  else
-    _hooks[event].push(callback);
 }
 
 
@@ -1896,51 +2989,261 @@ window.addResumeFunction = function(f) {
 
 
 
-// LOCATION HANDLING /////////////////////////////////////////////////
-// i.e. setting initial position and storing new position after moving
+// REQUEST HANDLING //////////////////////////////////////////////////
+// note: only meant for portal/links/fields request, everything else
+// does not count towards “loading”
 
-// retrieves current position from map and stores it cookies
-window.storeMapPosition = function() {
-  var m = window.map.getCenter();
+window.activeRequests = [];
+window.failedRequestCount = 0;
 
-  if(m['lat'] >= -90  && m['lat'] <= 90)
-    writeCookie('ingress.intelmap.lat', m['lat']);
+window.requests = function() {}
 
-  if(m['lng'] >= -180 && m['lng'] <= 180)
-    writeCookie('ingress.intelmap.lng', m['lng']);
+window.requests.add = function(ajax) {
+  window.activeRequests.push(ajax);
+  renderUpdateStatus();
+}
 
-  writeCookie('ingress.intelmap.zoom', window.map.getZoom());
+window.requests.remove = function(ajax) {
+  window.activeRequests.splice(window.activeRequests.indexOf(ajax), 1);
+  renderUpdateStatus();
+}
+
+window.requests.abort = function() {
+  $.each(window.activeRequests, function(ind, actReq) {
+    if(actReq) actReq.abort();
+  });
+
+  window.activeRequests = [];
+  window.failedRequestCount = 0;
+  window.chat._requestPublicRunning  = false;
+  window.chat._requestFactionRunning  = false;
+
+  renderUpdateStatus();
+}
+
+// gives user feedback about pending operations. Draws current status
+// to website. Updates info in layer chooser.
+window.renderUpdateStatus = function() {
+  var t = '<b>map status:</b> ';
+  if(mapRunsUserAction)
+    t += 'paused during interaction';
+  else if(isIdle())
+    t += '<span style="color:red">Idle, not updating.</span>';
+  else if(window.activeRequests.length > 0)
+    t += window.activeRequests.length + ' requests running.';
+  else
+    t += 'Up to date.';
+
+  if(renderLimitReached())
+    t += ' <span style="color:red" class="help" title="Can only render so much before it gets unbearably slow. Not all entities are shown. Zoom in or increase the limit (search for MAX_DRAWN_*).">RENDER LIMIT</span> '
+
+  if(window.failedRequestCount > 0)
+    t += ' <span style="color:red">' + window.failedRequestCount + ' failed</span>.'
+
+  t += '<br/>(';
+  var minlvl = getMinPortalLevel();
+  if(minlvl === 0)
+    t += 'loading all portals';
+  else
+    t+= 'only loading portals with level '+minlvl+' and up';
+  t += ')';
+
+  var portalSelection = $('.leaflet-control-layers-overlays label');
+  portalSelection.slice(0, minlvl+1).addClass('disabled').attr('title', 'Zoom in to show those.');
+  portalSelection.slice(minlvl, 8).removeClass('disabled').attr('title', '');
+
+
+  $('#updatestatus').html(t);
 }
 
 
-// either retrieves the last shown position from a cookie, from the
-// URL or if neither is present, via Geolocation. If that fails, it
-// returns a map that shows the whole world.
-window.getPosition = function() {
-  if(getURLParam('latE6') && getURLParam('lngE6')) {
-    console.log("mappos: reading URL params");
-    var lat = parseInt(getURLParam('latE6'))/1E6 || 0.0;
-    var lng = parseInt(getURLParam('lngE6'))/1E6 || 0.0;
-    // google seems to zoom in far more than leaflet
-    var z = parseInt(getURLParam('z'))+1 || 17;
-    return {center: new L.LatLng(lat, lng), zoom: z > 18 ? 18 : z};
+// sets the timer for the next auto refresh. Ensures only one timeout
+// is queued. May be given 'override' in milliseconds if time should
+// not be guessed automatically. Especially useful if a little delay
+// is required, for example when zooming.
+window.startRefreshTimeout = function(override) {
+  // may be required to remove 'paused during interaction' message in
+  // status bar
+  window.renderUpdateStatus();
+  if(refreshTimeout) clearTimeout(refreshTimeout);
+  var t = 0;
+  if(override) {
+    t = override;
+  } else {
+    t = REFRESH*1000;
+    var adj = ZOOM_LEVEL_ADJ * (18 - window.map.getZoom());
+    if(adj > 0) t += adj*1000;
+  }
+  var next = new Date(new Date().getTime() + t).toLocaleTimeString();
+  console.log('planned refresh: ' + next);
+  refreshTimeout = setTimeout(window.requests._callOnRefreshFunctions, t);
+}
+
+window.requests._onRefreshFunctions = [];
+window.requests._callOnRefreshFunctions = function() {
+  startRefreshTimeout();
+
+  if(isIdle()) {
+    console.log('user has been idle for ' + idleTime + ' minutes. Skipping refresh.');
+    renderUpdateStatus();
+    return;
   }
 
-  if(readCookie('ingress.intelmap.lat') && readCookie('ingress.intelmap.lng')) {
-    console.log("mappos: reading cookies");
-    var lat = parseFloat(readCookie('ingress.intelmap.lat')) || 0.0;
-    var lng = parseFloat(readCookie('ingress.intelmap.lng')) || 0.0;
-    var z = parseInt(readCookie('ingress.intelmap.zoom')) || 17;
+  console.log('refreshing');
 
-    if(lat < -90  || lat > 90) lat = 0.0;
-    if(lng < -180 || lng > 180) lng = 0.0;
+  $.each(window.requests._onRefreshFunctions, function(ind, f) {
+    f();
+  });
+}
 
-    return {center: new L.LatLng(lat, lng), zoom: z > 18 ? 18 : z};
+
+// add method here to be notified of auto-refreshes
+window.requests.addRefreshFunction = function(f) {
+  window.requests._onRefreshFunctions.push(f);
+}
+
+window.requests.isLastRequest = function(action) {
+  var result = true;
+  $.each(window.activeRequests, function(ind, req) {
+    if(req.action === action) {
+      result = false;
+      return false;
+    }
+  });
+  return result;
+}
+
+
+// GAME STATUS ///////////////////////////////////////////////////////
+// MindUnit display
+window.updateGameScore = function(data) {
+  if(!data) {
+    window.postAjax('getGameScore', {}, window.updateGameScore);
+    return;
   }
 
-  setTimeout("window.map.locate({setView : true, maxZoom: 13});", 50);
+  var r = parseInt(data.result.resistanceScore), e = parseInt(data.result.alienScore);
+  var s = r+e;
+  var rp = r/s*100, ep = e/s*100;
+  r = digits(r), e = digits(e);
+  var rs = '<span class="res" style="width:'+rp+'%;">'+Math.round(rp)+'%&nbsp;</span>';
+  var es = '<span class="enl" style="width:'+ep+'%;">&nbsp;'+Math.round(ep)+'%</span>';
+  $('#gamestat').html(rs+es).one('click', function() { window.updateGameScore() });
+  // help cursor via “#gamestat span”
+  $('#gamestat').attr('title', 'Resistance:\t'+r+' MindUnits\nEnlightened:\t'+e+' MindUnits');
 
-  return {center: new L.LatLng(0.0, 0.0), zoom: 1};
+  window.setTimeout('window.updateGameScore', REFRESH_GAME_SCORE*1000);
+}
+
+
+window.isSmartphone = function() {
+  // this check is also used in main.js. Note it should not detect
+  // tablets because their display is large enough to use the desktop
+  // version.
+
+  // The stock intel site allows forcing mobile/full sites with a vp=m or vp=f
+  // parameter - let's support the same. (stock only allows this for some
+  // browsers - e.g. android phone/tablet. let's allow it for all, but
+  // no promises it'll work right)
+  var viewParam = getURLParam('vp');
+  if (viewParam == 'm') return true;
+  if (viewParam == 'f') return false;
+
+  return navigator.userAgent.match(/Android.*Mobile/);
+}
+
+window.smartphone = function() {};
+
+window.runOnSmartphonesBeforeBoot = function() {
+  if(!isSmartphone()) return;
+  console.warn('running smartphone pre boot stuff');
+
+  // add smartphone stylesheet
+  headHTML = document.getElementsByTagName('head')[0].innerHTML;
+  headHTML += '<style>body {\n  background: #000;\n  color: #fff;\n}\n\n#sidebar, #updatestatus, #chatcontrols, #chat, #chatinput {\n  background: #0B3351 !important\n}\n\n\n.leaflet-control-layers {\n  margin-left: 0 !important;\n  margin-top: 40px !important;\n}\n\n.leaflet-control-zoom {\n  margin-left: 5px !important;\n  margin-top: 80px !important;\n}\n\n\n#chatcontrols {\n  height: 38px;\n  width: 100%;\n}\n\n/* hide shrink button */\n#chatcontrols a:first-child {\n  display: none;\n}\n\n#chatcontrols a {\n  width: 50px;\n  height:36px;\n  overflow: hidden;\n  vertical-align: middle;\n  line-height: 36px;\n  text-decoration: none;\n  -moz-box-sizing: border-box;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n}\n\n#chat {\n  left:0;\n  right:0;\n  top:37px !important;\n  bottom:30px;\n  width: auto;\n}\n\n#chatinput {\n  width: 100%;\n  height: 30px;\n}\n\n#chat td:nth-child(2), #chatinput td:nth-child(2) {\n  width: 77px;\n}\n\n\n\n\n#sidebartoggle {\n  display: none !important;\n}\n\n#scrollwrapper {\n  top: 36px;\n  bottom: 0;\n  max-height: none !important;\n  width: 100% !important;\n  right: 0;\n  left:0;\n}\n\n#sidebar {\n  width: 100% !important;\n  min-height: 100%;\n  border:0;\n}\n\n#sidebar > * {\n  width: 100%;\n}\n\n#playerstat {\n  margin-top: 5px;\n}\n\n#portaldetails {\n  min-height: 0;\n}\n\n.fullimg {\n  width: 100%;\n}\n\n.leaflet-control-layers-base {\n  float: left;\n}\n\n.leaflet-control-layers-overlays {\n  float: left;\n  margin-left: 8px;\n  border-left: 1px solid #DDDDDD;\n  padding-left: 8px;\n}\n\n.leaflet-control-layers-separator {\n  display: none;\n}\n\n.leaflet-control-layers-list label {\n  padding: 6px 0;\n}\n\n.leaflet-control-attribution {\n\n}\n</style>';
+  document.getElementsByTagName('head')[0].innerHTML = headHTML;
+
+  // don’t need many of those
+  window.setupStyles = function() {
+    $('head').append('<style>' +
+      [ '#largepreview.enl img { border:2px solid '+COLORS[TEAM_ENL]+'; } ',
+        '#largepreview.res img { border:2px solid '+COLORS[TEAM_RES]+'; } ',
+        '#largepreview.none img { border:2px solid '+COLORS[TEAM_NONE]+'; } '].join("\n")
+      + '</style>');
+  }
+
+  // this also matches the expand button, but it is hidden via CSS
+  $('#chatcontrols a').click(function() {
+    $('#scrollwrapper, #updatestatus').hide();
+    // not displaying the map causes bugs in Leaflet
+    $('#map').css('visibility', 'hidden');
+    $('#chat, #chatinput').show();
+  });
+
+  window.smartphone.mapButton = $('<a>map</a>').click(function() {
+    $('#chat, #chatinput, #scrollwrapper').hide();
+    $('#map').css('visibility', 'visible');
+    $('#updatestatus').show();
+    $('.active').removeClass('active');
+    $(this).addClass('active');
+  });
+
+  window.smartphone.sideButton = $('<a>info</a>').click(function() {
+    $('#chat, #chatinput, #updatestatus').hide();
+    $('#map').css('visibility', 'hidden');
+    $('#scrollwrapper').show();
+    $('.active').removeClass('active');
+    $(this).addClass('active');
+  });
+
+  $('#chatcontrols').append(smartphone.mapButton).append(smartphone.sideButton);
+
+  window.addHook('portalDetailsUpdated', function(data) {
+    var x = $('.imgpreview img').removeClass('hide');
+
+    if(!x.length) {
+      $('.fullimg').remove();
+      return;
+    }
+
+    if($('.fullimg').length) {
+      $('.fullimg').replaceWith(x.addClass('fullimg'));
+    } else {
+      x.addClass('fullimg').appendTo('#sidebar');
+    }
+  });
+}
+
+window.runOnSmartphonesAfterBoot = function() {
+  if(!isSmartphone()) return;
+  console.warn('running smartphone post boot stuff');
+
+  chat.toggle();
+  smartphone.mapButton.click();
+
+  // disable img full view
+  $('#portaldetails').off('click', '**');
+
+  $('.leaflet-right').addClass('leaflet-left').removeClass('leaflet-right');
+
+  // make buttons in action bar flexible
+  var l = $('#chatcontrols a:visible');
+  l.css('width', 100/l.length + '%');
+
+  // add event to portals that allows long press to switch to sidebar
+  window.addHook('portalAdded', function(data) {
+    data.portal.on('add', function() {
+      if(!this._container || this.options.addedTapHoldHandler) return;
+      this.options.addedTapHoldHandler = true;
+      var guid = this.options.guid;
+
+      // this is a hack, accessing Leaflet’s private _container is evil
+      $(this._container).on('taphold', function() {
+        window.renderPortalDetails(guid);
+        window.smartphone.sideButton.click();
+      });
+    });
+  });
 }
 
 
@@ -2603,1374 +3906,69 @@ window.findEntityInLeaflet = function(layerGroup, entityHash, guid) {
 
 
 
+// LOCATION HANDLING /////////////////////////////////////////////////
+// i.e. setting initial position and storing new position after moving
 
-// MAP DATA REQUEST CALCULATORS //////////////////////////////////////
-// Ingress Intel splits up requests for map data (portals, links,
-// fields) into tiles. To get data for the current viewport (i.e. what
-// is currently visible) it first calculates which tiles intersect.
-// For all those tiles, it then calculates the lat/lng bounds of that
-// tile and a quadkey. Both the bounds and the quadkey are “somewhat”
-// required to get complete data. No idea how the projection between
-// lat/lng and tiles works.
-// What follows now are functions that allow conversion between tiles
-// and lat/lng as well as calculating the quad key. The variable names
-// may be misleading.
-// The minified source for this code was in gen_dashboard.js after the
-// “// input 89” line (alternatively: the class was called “Xe”).
+// retrieves current position from map and stores it cookies
+window.storeMapPosition = function() {
+  var m = window.map.getCenter();
 
-window.convertCenterLat = function(centerLat) {
-  return Math.round(256 * 0.9999 * Math.abs(1 / Math.cos(centerLat * DEG2RAD)));
-}
+  if(m['lat'] >= -90  && m['lat'] <= 90)
+    writeCookie('ingress.intelmap.lat', m['lat']);
 
-window.calculateR = function(convCenterLat) {
-  return 1 << window.map.getZoom() - (convCenterLat / 256 - 1);
-}
+  if(m['lng'] >= -180 && m['lng'] <= 180)
+    writeCookie('ingress.intelmap.lng', m['lng']);
 
-window.convertLatLngToPoint = function(latlng, magic, R) {
-  var x = (magic/2 + latlng.lng * magic / 360)*R;
-  var l = Math.sin(latlng.lat * DEG2RAD);
-  var y =  (magic/2 + 0.5*Math.log((1+l)/(1-l)) * -(magic / (2*Math.PI)))*R;
-  return {x: Math.floor(x/magic), y: Math.floor(y/magic)};
-}
-
-window.convertPointToLatLng = function(x, y, magic, R) {
-  var e = {};
-  e.sw = {
-    // orig function put together from all over the place
-    // lat: (2 * Math.atan(Math.exp((((y + 1) * magic / R) - (magic/ 2)) / (-1*(magic / (2 * Math.PI))))) - Math.PI / 2) / (Math.PI / 180),
-    // shortened version by your favorite algebra program.
-    lat: (360*Math.atan(Math.exp(Math.PI - 2*Math.PI*(y+1)/R)))/Math.PI - 90,
-    lng: 360*x/R-180
-  };
-  e.ne = {
-    //lat: (2 * Math.atan(Math.exp(((y * magic / R) - (magic/ 2)) / (-1*(magic / (2 * Math.PI))))) - Math.PI / 2) / (Math.PI / 180),
-    lat: (360*Math.atan(Math.exp(Math.PI - 2*Math.PI*y/R)))/Math.PI - 90,
-    lng: 360*(x+1)/R-180
-  };
-  return e;
-}
-
-// calculates the quad key for a given point. The point is not(!) in
-// lat/lng format.
-window.pointToQuadKey = function(x, y) {
-  var quadkey = [];
-  for(var c = window.map.getZoom(); c > 0; c--) {
-    //  +-------+   quadrants are probably ordered like this
-    //  | 0 | 1 |
-    //  |---|---|
-    //  | 2 | 3 |
-    //  |---|---|
-    var quadrant = 0;
-    var e = 1 << c - 1;
-    (x & e) != 0 && quadrant++;               // push right
-    (y & e) != 0 && (quadrant++, quadrant++); // push down
-    quadkey.push(quadrant);
-  }
-  return quadkey.join("");
-}
-
-// given quadkey and bounds, returns the format as required by the
-// Ingress API to request map data.
-window.generateBoundsParams = function(quadkey, bounds) {
-  return {
-    id: quadkey,
-    qk: quadkey,
-    minLatE6: Math.round(bounds.sw.lat * 1E6),
-    minLngE6: Math.round(bounds.sw.lng * 1E6),
-    maxLatE6: Math.round(bounds.ne.lat * 1E6),
-    maxLngE6: Math.round(bounds.ne.lng * 1E6)
-  };
+  writeCookie('ingress.intelmap.zoom', window.map.getZoom());
 }
 
 
-// PLAYER NAMES //////////////////////////////////////////////////////
-// Player names are cached in local storage forever. There is no GUI
-// element from within the total conversion to clean them, but you
-// can run localStorage.clean() to reset it.
-
-
-// retrieves player name by GUID. If the name is not yet available, it
-// will be added to a global list of GUIDs that need to be resolved.
-// The resolve method is not called automatically.
-window.getPlayerName = function(guid) {
-  if(localStorage[guid]) return localStorage[guid];
-  // only add to queue if it isn’t already
-  if(playersToResolve.indexOf(guid) === -1 && playersInResolving.indexOf(guid) === -1) {
-    console.log('resolving player guid=' + guid);
-    playersToResolve.push(guid);
-  }
-  return '{'+guid.slice(0, 12)+'}';
-}
-
-window.playerNameToGuid = function(playerName){
-  var guid = null;
-  $.each(Object.keys(localStorage), function(ind,key) {
-    if(playerName === localStorage[key]) {
-      guid = key;
-      return false;
-    }
-  });
-  return guid;
-}
-
-// resolves all player GUIDs that have been added to the list. Reruns
-// renderPortalDetails when finished, so that then-unresolved names
-// get replaced by their correct versions.
-window.resolvePlayerNames = function() {
-  if(window.playersToResolve.length === 0) return;
-  var p = window.playersToResolve;
-  var d = {guids: p};
-  playersInResolving = window.playersInResolving.concat(p);
-  playersToResolve = [];
-  postAjax('getPlayersByGuids', d, function(dat) {
-    $.each(dat.result, function(ind, player) {
-      window.setPlayerName(player.guid, player.nickname);
-      // remove from array
-      window.playersInResolving.splice(window.playersInResolving.indexOf(player.guid), 1);
-    });
-    if(window.selectedPortal)
-      window.renderPortalDetails(window.selectedPortal);
-  },
-  function() {
-    // append failed resolves to the list again
-    console.warn('resolving player guids failed: ' + p.join(', '));
-    window.playersToResolve.concat(p);
-  });
-}
-
-
-window.setPlayerName = function(guid, nick) {
-  if($.trim(('' + nick)).slice(0, 5) === '{"L":' && !window.alertFor37WasShown) {
-    window.alertFor37WasShown = true;
-    alert('You have run into bug #37. Please help me solve it!\nCopy and paste this text and post it here:\nhttps://github.com/breunigs/ingress-intel-total-conversion/issues/37\nIf copy & pasting doesn’t work, make a screenshot instead.\n\n\n' + window.debug.printStackTrace() + '\n\n\n' + JSON.stringify(nick));
-  }
-  localStorage[guid] = nick;
-}
-
-
-window.loadPlayerNamesForPortal = function(portal_details) {
-  if(map.getZoom() < PRECACHE_PLAYER_NAMES_ZOOM) return;
-  var e = portal_details;
-
-  if(e.captured && e.captured.capturingPlayerId)
-    getPlayerName(e.captured.capturingPlayerId);
-
-  if(!e.resonatorArray || !e.resonatorArray.resonators) return;
-
-  $.each(e.resonatorArray.resonators, function(ind, reso) {
-    if(reso) getPlayerName(reso.ownerGuid);
-  });
-}
-
-
-// PORTAL DETAILS MAIN ///////////////////////////////////////////////
-// main code block that renders the portal details in the sidebar and
-// methods that highlight the portal in the map view.
-
-window.renderPortalDetails = function(guid) {
-  if(!window.portals[guid]) {
-    unselectOldPortal();
-    urlPortal = guid;
-    return;
+// either retrieves the last shown position from a cookie, from the
+// URL or if neither is present, via Geolocation. If that fails, it
+// returns a map that shows the whole world.
+window.getPosition = function() {
+  if(getURLParam('latE6') && getURLParam('lngE6')) {
+    console.log("mappos: reading URL params");
+    var lat = parseInt(getURLParam('latE6'))/1E6 || 0.0;
+    var lng = parseInt(getURLParam('lngE6'))/1E6 || 0.0;
+    // google seems to zoom in far more than leaflet
+    var z = parseInt(getURLParam('z'))+1 || 17;
+    return {center: new L.LatLng(lat, lng), zoom: z > 18 ? 18 : z};
   }
 
-  var d = window.portals[guid].options.details;
+  if(readCookie('ingress.intelmap.lat') && readCookie('ingress.intelmap.lng')) {
+    console.log("mappos: reading cookies");
+    var lat = parseFloat(readCookie('ingress.intelmap.lat')) || 0.0;
+    var lng = parseFloat(readCookie('ingress.intelmap.lng')) || 0.0;
+    var z = parseInt(readCookie('ingress.intelmap.zoom')) || 17;
 
-  selectPortal(guid);
+    if(lat < -90  || lat > 90) lat = 0.0;
+    if(lng < -180 || lng > 180) lng = 0.0;
 
-  // collect some random data that’s not worth to put in an own method
-  var links = {incoming: 0, outgoing: 0};
-  if(d.portalV2.linkedEdges) $.each(d.portalV2.linkedEdges, function(ind, link) {
-    links[link.isOrigin ? 'outgoing' : 'incoming']++;
-  });
-  function linkExpl(t) { return '<tt title="↳ incoming links\n↴ outgoing links\n• is meant to be the portal.">'+t+'</tt>'; }
-  var linksText = [linkExpl('links'), linkExpl(' ↳ ' + links.incoming+'&nbsp;&nbsp;•&nbsp;&nbsp;'+links.outgoing+' ↴')];
-
-  var player = d.captured && d.captured.capturingPlayerId
-    ? '<span class="nickname">' + getPlayerName(d.captured.capturingPlayerId) + '</span>'
-    : null;
-  var playerText = player ? ['owner', player] : null;
-
-  var time = d.captured
-    ? '<span title="' + unixTimeToString(d.captured.capturedTime, true) + '">'
-      +  unixTimeToString(d.captured.capturedTime) + '</span>'
-    : null;
-  var sinceText  = time ? ['since', time] : null;
-
-  var linkedFields = ['fields', d.portalV2.linkedFields.length];
-
-  // collect and html-ify random data
-  var randDetails = [
-    playerText, sinceText, getRangeText(d), getEnergyText(d),
-    linksText, getAvgResoDistText(d), linkedFields, getAttackApGainText(d)
-  ];
-  randDetails = '<table id="randdetails">' + genFourColumnTable(randDetails) + '</table>';
-
-  var resoDetails = '<table id="resodetails">' + getResonatorDetails(d) + '</table>';
-
-  setPortalIndicators(d);
-  var img = d.imageByUrl && d.imageByUrl.imageUrl
-    ? d.imageByUrl.imageUrl
-    : DEFAULT_PORTAL_IMG;
-
-  var lat = d.locationE6.latE6;
-  var lng = d.locationE6.lngE6;
-  var perma = 'https://ingress.com/intel?latE6='+lat+'&lngE6='+lng+'&z=17&pguid='+guid;
-  var imgTitle = 'title="'+getPortalDescriptionFromDetails(d)+'\n\nClick to show full image."';
-  var poslinks = 'window.showPortalPosLinks('+lat/1E6+','+lng/1E6+')';
-  var postcard = 'Send in a postcard. Will put it online after receiving. Address:\\n\\nStefan Breunig\\nINF 305 – R045\\n69120 Heidelberg\\nGermany';
-
-  $('#portaldetails')
-    .attr('class', TEAM_TO_CSS[getTeam(d)])
-    .html(''
-      + '<h3>'+d.portalV2.descriptiveText.TITLE+'</h3>'
-      // help cursor via “.imgpreview img”
-      + '<div class="imgpreview" '+imgTitle+' style="background-image: url('+img+')">'
-      + '<img class="hide" src="'+img+'"/>'
-      + '<span id="level">'+Math.floor(getPortalLevel(d))+'</span>'
-      + '</div>'
-      + '<div class="mods">'+getModDetails(d)+'</div>'
-      + randDetails
-      + resoDetails
-      + '<div class="linkdetails"><aside><a href="'+perma+'" onclick="return androidCopy(this.href)" >portal link</a></aside>'
-      + '<aside><a onclick="'+poslinks+'">poslinks</a></aside>'
-      + '<aside><a onclick="alert(\''+postcard+'\');">donate</a></aside>'
-      + '<aside><a onclick="window.reportPortalIssue()">report issue</a></aside>'
-      + '</div>'
-    );
-
-  // try to resolve names that were required for above functions, but
-  // weren’t available yet.
-  resolvePlayerNames();
-
-  runHooks('portalDetailsUpdated', {portalDetails: d});
-}
-
-// draws link-range and hack-range circles around the portal with the
-// given details.
-window.setPortalIndicators = function(d) {
-  if(portalRangeIndicator) map.removeLayer(portalRangeIndicator);
-  var range = getPortalRange(d);
-  var coord = [d.locationE6.latE6/1E6, d.locationE6.lngE6/1E6];
-  portalRangeIndicator = (range > 0
-      ? L.circle(coord, range, { fill: false, color: RANGE_INDICATOR_COLOR, weight: 3, clickable: false })
-      : L.circle(coord, range, { fill: false, stroke: false, clickable: false })
-    ).addTo(map);
-  if(!portalAccessIndicator)
-    portalAccessIndicator = L.circle(coord, HACK_RANGE,
-      { fill: false, color: ACCESS_INDICATOR_COLOR, weight: 2, clickable: false }
-    ).addTo(map);
-  else
-    portalAccessIndicator.setLatLng(coord);
-
-}
-
-// highlights portal with given GUID. Automatically clears highlights
-// on old selection. Returns false if the selected portal changed.
-// Returns true if it’s still the same portal that just needs an
-// update.
-window.selectPortal = function(guid) {
-  var update = selectedPortal === guid;
-  var oldPortal = portals[selectedPortal];
-  if(!update && oldPortal) portalResetColor(oldPortal);
-
-  selectedPortal = guid;
-
-  if(portals[guid]) {
-    resonatorsSetSelectStyle(guid);
-    portals[guid].bringToFront().setStyle({color: COLOR_SELECTED_PORTAL});
+    return {center: new L.LatLng(lat, lng), zoom: z > 18 ? 18 : z};
   }
 
-  return update;
-}
-
-
-window.unselectOldPortal = function() {
-  var oldPortal = portals[selectedPortal];
-  if(oldPortal) portalResetColor(oldPortal);
-  selectedPortal = null;
-  $('#portaldetails').html('');
-}
-
-
-// PORTAL DETAILS DISPLAY ////////////////////////////////////////////
-// hand any of these functions the details-hash of a portal, and they
-// will return pretty, displayable HTML or parts thereof.
-
-// returns displayable text+link about portal range
-window.getRangeText = function(d) {
-  var range = getPortalRange(d);
-  return ['range',
-      '<a onclick="window.rangeLinkClick()">'
-    + (range > 1000
-      ? Math.round(range/1000) + ' km'
-      : Math.round(range)      + ' m')
-    + '</a>'];
-}
-
-// generates description text from details for portal
-window.getPortalDescriptionFromDetails = function(details) {
-  var descObj = details.portalV2.descriptiveText;
-  // FIXME: also get real description?
-  var desc = descObj.TITLE + '\n' + descObj.ADDRESS;
-  if(descObj.ATTRIBUTION)
-    desc += '\nby '+descObj.ATTRIBUTION+' ('+descObj.ATTRIBUTION_LINK+')';
-  return desc;
-}
-
-
-// given portal details, returns html code to display mod details.
-window.getModDetails = function(d) {
-  var mods = [];
-  var modsTitle = [];
-  var modsColor = [];
-  $.each(d.portalV2.linkedModArray, function(ind, mod) {
-    if(!mod) {
-      mods.push('');
-      modsTitle.push('');
-      modsColor.push('#000');
-    } else if(mod.type === 'RES_SHIELD') {
-
-      var title = mod.rarity.capitalize() + ' ' + mod.displayName + '\n';
-      title += 'Installed by: '+ getPlayerName(mod.installingUser);
-
-      title += '\nStats:';
-      for (var key in mod.stats) {
-        if (!mod.stats.hasOwnProperty(key)) continue;
-        title += '\n+' +  mod.stats[key] + ' ' + key.capitalize();
-      }
-
-      mods.push(mod.rarity.capitalize().replace('_', ' ') + ' ' + mod.displayName);
-      modsTitle.push(title);
-      modsColor.push(COLORS_MOD[mod.rarity]);
-    } else {
-      mods.push(mod.type);
-      modsTitle.push('Unknown mod. No further details available.');
-      modsColor.push('#FFF');
-    }
-  });
-
-  var t = '<span'+(modsTitle[0].length ? ' title="'+modsTitle[0]+'"' : '')+' style="color:'+modsColor[0]+'">'+mods[0]+'</span>'
-        + '<span'+(modsTitle[1].length ? ' title="'+modsTitle[1]+'"' : '')+' style="color:'+modsColor[1]+'">'+mods[1]+'</span>'
-        + '<span'+(modsTitle[2].length ? ' title="'+modsTitle[2]+'"' : '')+' style="color:'+modsColor[2]+'">'+mods[2]+'</span>'
-        + '<span'+(modsTitle[3].length ? ' title="'+modsTitle[3]+'"' : '')+' style="color:'+modsColor[3]+'">'+mods[3]+'</span>'
-
-  return t;
-}
-
-window.getEnergyText = function(d) {
-  var currentNrg = getCurrentPortalEnergy(d);
-  var totalNrg = getTotalPortalEnergy(d);
-  var inf = currentNrg + ' / ' + totalNrg;
-  var fill = prettyEnergy(currentNrg) + ' / ' + prettyEnergy(totalNrg)
-  return ['energy', '<tt title="'+inf+'">' + fill + '</tt>'];
-}
-
-window.getAvgResoDistText = function(d) {
-  var avgDist = Math.round(10*getAvgResoDist(d))/10;
-  return ['reso dist', avgDist + ' m'];
-}
-
-window.getResonatorDetails = function(d) {
-  var resoDetails = [];
-  // octant=slot: 0=E, 1=NE, 2=N, 3=NW, 4=W, 5=SW, 6=S, SE=7
-  // resos in the display should be ordered like this:
-  //   N    NE         Since the view is displayed in columns, they
-  //  NW    E          need to be ordered like this: N, NW, W, SW, NE,
-  //   W    SE         E, SE, S, i.e. 2 3 4 5 1 0 7 6
-  //  SW    S
-
-  $.each([2, 1, 3, 0, 4, 7, 5, 6], function(ind, slot) {
-    var reso = d.resonatorArray.resonators[slot];
-    if(!reso) {
-      resoDetails.push(renderResonatorDetails(slot, 0, 0, null, null));
-      return true;
-    }
-
-    var l = parseInt(reso.level);
-    var v = parseInt(reso.energyTotal);
-    var nick = window.getPlayerName(reso.ownerGuid);
-    var dist = reso.distanceToPortal;
-    // if array order and slot order drift apart, at least the octant
-    // naming will still be correct.
-    slot = parseInt(reso.slot);
-
-    resoDetails.push(renderResonatorDetails(slot, l, v, dist, nick));
-  });
-  return genFourColumnTable(resoDetails);
-}
-
-// helper function that renders the HTML for a given resonator. Does
-// not work with raw details-hash. Needs digested infos instead:
-// slot: which slot this resonator occupies. Starts with 0 (east) and
-// rotates clockwise. So, last one is 7 (southeast).
-window.renderResonatorDetails = function(slot, level, nrg, dist, nick) {
-  if(level === 0) {
-    var meter = '<span class="meter" title="octant:\t' + OCTANTS[slot] + '"></span>';
-  } else {
-    var max = RESO_NRG[level];
-    var fillGrade = nrg/max*100;
-
-    var inf = 'energy:\t' + nrg   + ' / ' + max + ' (' + Math.round(fillGrade) + '%)\n'
-            + 'level:\t'  + level + '\n'
-            + 'distance:\t' + dist  + 'm\n'
-            + 'owner:\t'  + nick  + '\n'
-            + 'octant:\t' + OCTANTS[slot];
-
-    var style = 'width:'+fillGrade+'%; background:'+COLORS_LVL[level]+';';
-
-    var color = (level < 3 ? "#9900FF" : "#FFFFFF");
-
-    var lbar = '<span class="meter-level" style="color: ' + color + ';"> ' + level + ' </span>';
-
-    var fill  = '<span style="'+style+'"></span>';
-
-    var meter = '<span class="meter" title="'+inf+'">' + fill + lbar + '</span>';
-  }
-  nick = nick ? '<span class="nickname">'+nick+'</span>' : null;
-  return [meter, nick || ''];
-}
-
-// calculate AP gain from destroying portal and then capturing it by deploying resonators
-window.getAttackApGainText = function(d) {
-  var breakdown = getAttackApGain(d);
-  var totalGain = breakdown.enemyAp;
-
-  function tt(text) {
-    var t = '';
-    if (PLAYER.team == d.controllingTeam.team) {
-      totalGain = breakdown.friendlyAp;
-      t += 'Friendly AP:\t' + breakdown.friendlyAp + '\n';
-      t += '  Deploy ' + breakdown.deployCount + ', ';
-      t += 'Upgrade ' + breakdown.upgradeCount + '\n';
-      t += '\n';
-    }
-    t += 'Enemy AP:\t' + breakdown.enemyAp + '\n';
-    t += '  Destroy AP:\t' + breakdown.destroyAp + '\n';
-    t += '  Capture AP:\t' + breakdown.captureAp + '\n';
-    return '<tt title="' + t + '">' + digits(text) + '</tt>';
-  }
-
-  return [tt('AP Gain'), tt(totalGain)];
-}
-
-
-
-
-// PORTAL DETAILS TOOLS //////////////////////////////////////////////
-// hand any of these functions the details-hash of a portal, and they
-// will return useful, but raw data.
-
-// returns a float. Displayed portal level is always rounded down from
-// that value.
-window.getPortalLevel = function(d) {
-  var lvl = 0;
-  var hasReso = false;
-  $.each(d.resonatorArray.resonators, function(ind, reso) {
-    if(!reso) return true;
-    lvl += parseInt(reso.level);
-    hasReso = true;
-  });
-  return hasReso ? Math.max(1, lvl/8) : 0;
-}
-
-window.getTotalPortalEnergy = function(d) {
-  var nrg = 0;
-  $.each(d.resonatorArray.resonators, function(ind, reso) {
-    if(!reso) return true;
-    var level = parseInt(reso.level);
-    var max = RESO_NRG[level];
-    nrg += max;
-  });
-  return nrg;
-}
-
-// For backwards compatibility
-window.getPortalEnergy = window.getTotalPortalEnergy;
-
-window.getCurrentPortalEnergy = function(d) {
-  var nrg = 0;
-  $.each(d.resonatorArray.resonators, function(ind, reso) {
-    if(!reso) return true;
-    nrg += parseInt(reso.energyTotal);
-  });
-  return nrg;
-}
-
-window.getPortalRange = function(d) {
-  // formula by the great gals and guys at
-  // http://decodeingress.me/2012/11/18/ingress-portal-levels-and-link-range/
-
-  var lvl = 0;
-  var resoMissing = false;
-  $.each(d.resonatorArray.resonators, function(ind, reso) {
-    if(!reso) {
-      resoMissing = true;
-      return false;
-    }
-    lvl += parseInt(reso.level);
-  });
-  if(resoMissing) return 0;
-  return 160*Math.pow(getPortalLevel(d), 4);
-}
-
-window.getAvgResoDist = function(d) {
-  var sum = 0, resos = 0;
-  $.each(d.resonatorArray.resonators, function(ind, reso) {
-    if(!reso) return true;
-    sum += parseInt(reso.distanceToPortal);
-    resos++;
-  });
-  return resos ? sum/resos : 0;
-}
-
-window.getAttackApGain = function(d) {
-  var resoCount = 0;
-  var maxResonators = MAX_RESO_PER_PLAYER.slice(0);
-  var curResonators = [ 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  
-  for(var n = PLAYER.level + 1; n < 9; n++) {
-    maxResonators[n] = 0;
-  }
-  $.each(d.resonatorArray.resonators, function(ind, reso) {
-    if(!reso)
-      return true;
-    resoCount += 1;
-    if(reso.ownerGuid === PLAYER.guid) {
-      maxResonators[parseInt(reso.level)] -= 1;
-    } else {
-      curResonators[parseInt(reso.level)] += 1;
-    }
-  });
-
-  var linkCount = d.portalV2.linkedEdges ? d.portalV2.linkedEdges.length : 0;
-  var fieldCount = d.portalV2.linkedFields ? d.portalV2.linkedFields.length : 0;
-
-  var resoAp = resoCount * DESTROY_RESONATOR;
-  var linkAp = linkCount * DESTROY_LINK;
-  var fieldAp = fieldCount * DESTROY_FIELD;
-  var destroyAp = resoAp + linkAp + fieldAp;
-  var captureAp = CAPTURE_PORTAL + 8 * DEPLOY_RESONATOR + COMPLETION_BONUS;
-  var enemyAp = destroyAp + captureAp;
-  var deployCount = 8 - resoCount;
-  var completionAp = (deployCount > 0) ? COMPLETION_BONUS : 0;
-  var upgradeCount = 0;
-  var upgradeAvailable = maxResonators[8];
-  for(var n = 7; n >= 0; n--) {
-    upgradeCount += curResonators[n];
-    if(upgradeAvailable < upgradeCount) {
-        upgradeCount -= (upgradeCount - upgradeAvailable);
-    }
-    upgradeAvailable += maxResonators[n];
-  }
-  var friendlyAp = deployCount * DEPLOY_RESONATOR + upgradeCount * UPGRADE_ANOTHERS_RESONATOR + completionAp;
-  return {
-    friendlyAp: friendlyAp,
-    deployCount: deployCount,
-    upgradeCount: upgradeCount,
-    enemyAp: enemyAp,
-    destroyAp: destroyAp,
-    resoAp: resoAp,
-    captureAp: captureAp
-  };
-}
-
-
-
-// PORTAL RENDER LIMIT HANDLER ///////////////////////////////////////
-// Functions to handle hiding low level portal when portal render 
-// limit is reached. 
-//
-// On initialization, previous minLevel will preserve to previousMinLevel
-// with zoom level difference. 
-//
-// After initialized and reset in window.requestData(), "processPortals" 
-// intercept all portals data in "handleDataResponse". Put the count of 
-// new portals to newPortalsPerLevel[portal level]. And split portals 
-// into two parts base on previousMinLevel. Portals with level >= 
-// previousMinLevel will return as result and continue to render. 
-// Others will save to portalsPreviousMinLevel. If there is no more 
-// active request of map data, portals will not split and 
-// portalsPreviousMinLevel will add back to result and render base on 
-// current minLevel. 
-//
-// "handleFailRequest" is added to handle the case when the last request 
-// failed and "processPortals" didn't get called. It will get
-// portalsPreviousMinLevel base on current minLevel and render them.
-//
-// "getMinLevel" will be called by "getMinPortalLevel" in utils_misc.js 
-// to determine min portal level to draw on map.
-// 
-// "getMinLevel" will return minLevel and call "setMinLevel" if 
-// minLevel hasn't set yet. 
-// 
-// In "setMinLevel", it will loop through all portal level from 
-// high to low, and sum total portal count (old + new) to check 
-// minLevel. 
-//
-// In each call of window.handleDataResponse(), it will call 
-// "resetCounting" to reset previous response data. But minLevel
-// is preserved and only replaced when render limit reached in 
-// higher level, until next window.requestData() called and reset.
-// 
-
-window.portalRenderLimit = function() {}
-
-window.portalRenderLimit.initialized = false;
-window.portalRenderLimit.minLevelSet = false;
-window.portalRenderLimit.minLevel = -1;
-window.portalRenderLimit.previousMinLevel = -1;
-window.portalRenderLimit.previousZoomLevel;
-window.portalRenderLimit.newPortalsPerLevel = new Array(MAX_PORTAL_LEVEL + 1);
-window.portalRenderLimit.portalsPreviousMinLevel = new Array(MAX_PORTAL_LEVEL + 1);
-
-window.portalRenderLimit.init = function () {
-  var currentZoomLevel = map.getZoom();
-  portalRenderLimit.previousZoomLevel = portalRenderLimit.previousZoomLevel || currentZoomLevel;
-
-  // If there is a minLevel set in previous run, calculate previousMinLevel with it.
-  if(portalRenderLimit.minLevelSet) {
-    var zoomDiff = currentZoomLevel - portalRenderLimit.previousZoomLevel;
-    portalRenderLimit.previousMinLevel = Math.max(portalRenderLimit.minLevel - zoomDiff, -1);
-    portalRenderLimit.previousMinLevel = Math.min(portalRenderLimit.previousMinLevel, MAX_PORTAL_LEVEL);
-  }
-
-  portalRenderLimit.previousZoomLevel = currentZoomLevel;
-
-  portalRenderLimit.initialized = true;
-  portalRenderLimit.minLevel = -1;
-  portalRenderLimit.resetCounting();
-  portalRenderLimit.resetPortalsPreviousMinLevel();
-}
-
-window.portalRenderLimit.resetCounting = function() {
-  portalRenderLimit.minLevelSet = false;
-  for(var i = 0; i <= MAX_PORTAL_LEVEL; i++) {
-    portalRenderLimit.newPortalsPerLevel[i] = 0;
-  }
-}
-
-window.portalRenderLimit.resetPortalsPreviousMinLevel = function() {
-  for(var i = 0; i <= MAX_PORTAL_LEVEL; i++) {
-    portalRenderLimit.portalsPreviousMinLevel[i] = new Array();
-  }
-}
-
-window.portalRenderLimit.splitOrMergeLowLevelPortals = function(originPortals) {
-  portalRenderLimit.resetCounting();
-  portalRenderLimit.countingPortals(originPortals);
-
-  var resultPortals = requests.isLastRequest('getThinnedEntitiesV2')
-    ? portalRenderLimit.mergeLowLevelPortals(originPortals)
-    : portalRenderLimit.splitLowLevelPortals(originPortals);
-
-  return resultPortals;
-}
-
-window.portalRenderLimit.countingPortals = function(portals) {
-  $.each(portals, function(ind, portal) {
-    var portalGuid = portal[0];
-    var portalLevel = parseInt(getPortalLevel(portal[2]));
-    var layerGroup = portalsLayers[portalLevel];
-
-    if(findEntityInLeaflet(layerGroup, window.portals, portalGuid)) return true;
-
-    portalRenderLimit.newPortalsPerLevel[portalLevel]++;
-  });
-}
-
-window.portalRenderLimit.splitLowLevelPortals = function(portals) {
-  var resultPortals = new Array();
-  $.each(portals, function(ind, portal) {
-    var portalLevel = parseInt(getPortalLevel(portal[2]));
-    if(portalLevel < portalRenderLimit.previousMinLevel) {
-      portalRenderLimit.portalsPreviousMinLevel[portalLevel].push(portal);
-    }else{
-      resultPortals.push(portal);
-    }
-  });
-  return resultPortals;
-}
-
-window.portalRenderLimit.mergeLowLevelPortals = function(appendTo) {
-  var resultPortals = appendTo ? appendTo : new Array();
-  for(var i = portalRenderLimit.getMinLevel(); 
-      i < portalRenderLimit.previousMinLevel; 
-     i++) {
-    $.merge(resultPortals, portalRenderLimit.portalsPreviousMinLevel[i]);
-  }
-
-  // Reset portalsPreviousMinLevel, ensure they return only once
-  portalRenderLimit.resetPortalsPreviousMinLevel();
-  return resultPortals;
-}
-
-window.portalRenderLimit.getMinLevel = function() {
-  if(!portalRenderLimit.initialized) return -1;
-  if(!portalRenderLimit.minLevelSet) portalRenderLimit.setMinLevel();
-  return portalRenderLimit.minLevel;
-}
-
-window.portalRenderLimit.setMinLevel = function() {
-  var totalPortalsCount = 0;
-  var newMinLevel = MAX_PORTAL_LEVEL + 1;
-  
-  // Find the min portal level under render limit
-  while(newMinLevel > 0) {
-    var oldPortalCount = layerGroupLength(portalsLayers[newMinLevel - 1]);
-    var newPortalCount = portalRenderLimit.newPortalsPerLevel[newMinLevel - 1];
-    totalPortalsCount += oldPortalCount + newPortalCount;
-    if(totalPortalsCount >= MAX_DRAWN_PORTALS)
-      break;
-    newMinLevel--;
-  }
-  
-  // If render limit reached at max portal level, still let portal at max level render
-  newMinLevel = Math.min(newMinLevel, MAX_PORTAL_LEVEL);
-  
-  portalRenderLimit.minLevel = Math.max(newMinLevel, portalRenderLimit.minLevel);
-  portalRenderLimit.minLevelSet = true;
-}
-
-
-
-
-// REDEEMING /////////////////////////////////////////////////////////
-
-window.handleRedeemResponse = function(data, textStatus, jqXHR) {
-  if(data.error) {
-    var error = '';
-    if(data.error === 'ALREADY_REDEEMED') {
-      error = 'The passcode has already been redeemed.';
-    } else if(data.error === 'ALREADY_REDEEMED_BY_PLAYER') {
-      error = 'You have already redeemed this passcode.';
-    } else if(data.error === 'INVALID_PASSCODE') {
-      error = 'This passcode is invalid.';
-    } else {
-      error = 'There was a problem redeeming the passcode. Try again?';
-    }
-    alert('<strong>' + data.error + '</strong>\n' + error);
-  } else if(data.result) {
-    var tblResult = $('<table class="redeem-result" />');
-    tblResult.append($('<tr><th colspan="2">Passcode accepted!</th></tr>'));
-  
-    if(data.result.apAward)
-      tblResult.append($('<tr><td>+</td><td>' + data.result.apAward + 'AP</td></tr>'));
-    if(data.result.xmAward)
-      tblResult.append($('<tr><td>+</td><td>' + data.result.xmAward + 'XM</td></tr>'));
-  
-    var resonators = {};
-    var bursts = {};
-    var shields = {};
-     
-    for(var i in data.result.inventoryAward) {
-      var acquired = data.result.inventoryAward[i][2];
-      if(acquired.modResource) {
-        if(acquired.modResource.resourceType === 'RES_SHIELD') {
-          var rarity = acquired.modResource.rarity.split('_').map(function (i) {return i[0]}).join('');
-          if(!shields[rarity]) shields[rarity] = 0;
-          shields[rarity] += 1;
-        }
-      } else if(acquired.resourceWithLevels) {
-        if(acquired.resourceWithLevels.resourceType === 'EMITTER_A') {
-          var level = acquired.resourceWithLevels.level
-          if(!resonators[level]) resonators[level] = 0;
-          resonators[level] += 1;
-        } else if(acquired.resourceWithLevels.resourceType === 'EMP_BURSTER') {
-          var level = acquired.resourceWithLevels.level
-          if(!bursts[level]) bursts[level] = 0;
-          bursts[level] += 1;
-        }
-      }
-    }
-    
-    $.each(resonators, function(lvl, count) {
-      var text = 'Resonator';
-      if(count >= 2) text += ' ('+count+')';
-      tblResult.append($('<tr ><td style="color: ' +window.COLORS_LVL[lvl]+ ';">L' +lvl+ '</td><td>' + text + '</td></tr>'));
-    });
-    $.each(bursts, function(lvl, count) {
-      var text = 'Xmp Burster';
-      if(count >= 2) text += ' ('+count+')';
-      tblResult.append($('<tr ><td style="color: ' +window.COLORS_LVL[lvl]+ ';">L' +lvl+ '</td><td>' + text + '</td></tr>'));
-    });
-    $.each(shields, function(lvl, count) {
-      var text = 'Portal Shield';
-      if(count >= 2) text += ' ('+count+')';
-      tblResult.append($('<tr><td>'+lvl+'</td><td>'+text+'</td></tr>'));
-    });
-
-    alert(tblResult, true);
-  }
-}
-
-window.setupRedeem = function() {
-  $("#redeem").keypress(function(e) {
-    if((e.keyCode ? e.keyCode : e.which) != 13) return;
-    var data = {passcode: $(this).val()};
-    window.postAjax('redeemReward', data, window.handleRedeemResponse,
-      function(response) {
-        var extra = '';
-        if(response && response.status) {
-          if(response.status === 429) {
-            extra = 'You have been rate-limited by the server. Wait a bit and try again.';
-          } else {
-            extra = 'The server indicated an error.';
-          }
-          extra += '\nResponse: HTTP <a href="http://httpstatus.es/' + response.status + '" alt="HTTP ' + response.status + '">' + response.status + '</a>.';
-        } else {
-          extra = 'No status code was returned.';
-        }
-        alert('<strong>The HTTP request failed.</strong> ' + extra);
-      });
-  });
-}
-
-
-
-// REQUEST HANDLING //////////////////////////////////////////////////
-// note: only meant for portal/links/fields request, everything else
-// does not count towards “loading”
-
-window.activeRequests = [];
-window.failedRequestCount = 0;
-
-window.requests = function() {}
-
-window.requests.add = function(ajax) {
-  window.activeRequests.push(ajax);
-  renderUpdateStatus();
-}
-
-window.requests.remove = function(ajax) {
-  window.activeRequests.splice(window.activeRequests.indexOf(ajax), 1);
-  renderUpdateStatus();
-}
+  setTimeout("window.map.locate({setView : true, maxZoom: 13});", 50);
 
-window.requests.abort = function() {
-  $.each(window.activeRequests, function(ind, actReq) {
-    if(actReq) actReq.abort();
-  });
-
-  window.activeRequests = [];
-  window.failedRequestCount = 0;
-  window.chat._requestPublicRunning  = false;
-  window.chat._requestFactionRunning  = false;
-
-  renderUpdateStatus();
-}
-
-// gives user feedback about pending operations. Draws current status
-// to website. Updates info in layer chooser.
-window.renderUpdateStatus = function() {
-  var t = '<b>map status:</b> ';
-  if(mapRunsUserAction)
-    t += 'paused during interaction';
-  else if(isIdle())
-    t += '<span style="color:red">Idle, not updating.</span>';
-  else if(window.activeRequests.length > 0)
-    t += window.activeRequests.length + ' requests running.';
-  else
-    t += 'Up to date.';
-
-  if(renderLimitReached())
-    t += ' <span style="color:red" class="help" title="Can only render so much before it gets unbearably slow. Not all entities are shown. Zoom in or increase the limit (search for MAX_DRAWN_*).">RENDER LIMIT</span> '
-
-  if(window.failedRequestCount > 0)
-    t += ' <span style="color:red">' + window.failedRequestCount + ' failed</span>.'
-
-  t += '<br/>(';
-  var minlvl = getMinPortalLevel();
-  if(minlvl === 0)
-    t += 'loading all portals';
-  else
-    t+= 'only loading portals with level '+minlvl+' and up';
-  t += ')';
-
-  var portalSelection = $('.leaflet-control-layers-overlays label');
-  portalSelection.slice(0, minlvl+1).addClass('disabled').attr('title', 'Zoom in to show those.');
-  portalSelection.slice(minlvl, 8).removeClass('disabled').attr('title', '');
-
-
-  $('#updatestatus').html(t);
-}
-
-
-// sets the timer for the next auto refresh. Ensures only one timeout
-// is queued. May be given 'override' in milliseconds if time should
-// not be guessed automatically. Especially useful if a little delay
-// is required, for example when zooming.
-window.startRefreshTimeout = function(override) {
-  // may be required to remove 'paused during interaction' message in
-  // status bar
-  window.renderUpdateStatus();
-  if(refreshTimeout) clearTimeout(refreshTimeout);
-  var t = 0;
-  if(override) {
-    t = override;
-  } else {
-    t = REFRESH*1000;
-    var adj = ZOOM_LEVEL_ADJ * (18 - window.map.getZoom());
-    if(adj > 0) t += adj*1000;
-  }
-  var next = new Date(new Date().getTime() + t).toLocaleTimeString();
-  console.log('planned refresh: ' + next);
-  refreshTimeout = setTimeout(window.requests._callOnRefreshFunctions, t);
-}
-
-window.requests._onRefreshFunctions = [];
-window.requests._callOnRefreshFunctions = function() {
-  startRefreshTimeout();
-
-  if(isIdle()) {
-    console.log('user has been idle for ' + idleTime + ' minutes. Skipping refresh.');
-    renderUpdateStatus();
-    return;
-  }
-
-  console.log('refreshing');
-
-  $.each(window.requests._onRefreshFunctions, function(ind, f) {
-    f();
-  });
-}
-
-
-// add method here to be notified of auto-refreshes
-window.requests.addRefreshFunction = function(f) {
-  window.requests._onRefreshFunctions.push(f);
-}
-
-window.requests.isLastRequest = function(action) {
-  var result = true;
-  $.each(window.activeRequests, function(ind, req) {
-    if(req.action === action) {
-      result = false;
-      return false;
-    }
-  });
-  return result;
-}
-
-window.isSmartphone = function() {
-  // this check is also used in main.js. Note it should not detect
-  // tablets because their display is large enough to use the desktop
-  // version.
-  return navigator.userAgent.match(/Android.*Mobile/);
-}
-
-window.smartphone = function() {};
-
-window.runOnSmartphonesBeforeBoot = function() {
-  if(!isSmartphone()) return;
-  console.warn('running smartphone pre boot stuff');
-
-  // disable zoom buttons to see if they are really needed
-  window.localStorage['iitc.zoom.buttons'] = 'false';
-
-  // don’t need many of those
-  window.setupStyles = function() {
-    $('head').append('<style>' +
-      [ '#largepreview.enl img { border:2px solid '+COLORS[TEAM_ENL]+'; } ',
-        '#largepreview.res img { border:2px solid '+COLORS[TEAM_RES]+'; } ',
-        '#largepreview.none img { border:2px solid '+COLORS[TEAM_NONE]+'; } '].join("\n")
-      + '</style>');
-  }
-
-  // this also matches the expand button, but it is hidden via CSS
-  $('#chatcontrols a').click(function() {
-    $('#scrollwrapper, #updatestatus').hide();
-    // not displaying the map causes bugs in Leaflet
-    $('#map').css('visibility', 'hidden');
-    $('#chat, #chatinput').show();
-  });
-
-  window.smartphone.mapButton = $('<a>map</a>').click(function() {
-    $('#chat, #chatinput, #scrollwrapper').hide();
-    $('#map').css('visibility', 'visible');
-    $('#updatestatus').show();
-    $('.active').removeClass('active');
-    $(this).addClass('active');
-  });
-
-  window.smartphone.sideButton = $('<a>info</a>').click(function() {
-    $('#chat, #chatinput, #updatestatus').hide();
-    $('#map').css('visibility', 'hidden');
-    $('#scrollwrapper').show();
-    $('.active').removeClass('active');
-    $(this).addClass('active');
-  });
-
-  $('#chatcontrols').append(smartphone.mapButton).append(smartphone.sideButton);
-
-  window.addHook('portalDetailsUpdated', function(data) {
-    var x = $('.imgpreview img').removeClass('hide');
-
-    if(!x.length) {
-      $('.fullimg').remove();
-      return;
-    }
-
-    if($('.fullimg').length) {
-      $('.fullimg').replaceWith(x.addClass('fullimg'));
-    } else {
-      x.addClass('fullimg').appendTo('#sidebar');
-    }
-  });
-}
-
-window.runOnSmartphonesAfterBoot = function() {
-  if(!isSmartphone()) return;
-  console.warn('running smartphone post boot stuff');
-
-  chat.toggle();
-  smartphone.mapButton.click();
-
-  // disable img full view
-  $('#portaldetails').off('click', '**');
-
-  $('.leaflet-right').addClass('leaflet-left').removeClass('leaflet-right');
-
-  // make buttons in action bar flexible
-  var l = $('#chatcontrols a:visible');
-  l.css('width', 100/l.length + '%');
-
-  // add event to portals that allows long press to switch to sidebar
-  window.addHook('portalAdded', function(data) {
-    data.portal.on('add', function() {
-      if(!this._container || this.options.addedTapHoldHandler) return;
-      this.options.addedTapHoldHandler = true;
-      var guid = this.options.guid;
-
-      // this is a hack, accessing Leaflet’s private _container is evil
-      $(this._container).on('taphold', function() {
-        window.renderPortalDetails(guid);
-        window.smartphone.sideButton.click();
-      });
-    });
-  });
-}
-
-
-
-
-// UTILS + MISC  ///////////////////////////////////////////////////////
-
-window.layerGroupLength = function(layerGroup) {
-  var layersCount = 0;
-  var layers = layerGroup._layers;
-  if (layers)
-    layersCount = Object.keys(layers).length;
-  return layersCount;
-}
-
-// retrieves parameter from the URL?query=string.
-window.getURLParam = function(param) {
-  var v = document.URL;
-  var i = v.indexOf(param);
-  if(i <= -1) return '';
-  v = v.substr(i);
-  i = v.indexOf("&");
-  if(i >= 0) v = v.substr(0, i);
-  return v.replace(param+"=","");
-}
-
-// read cookie by name.
-// http://stackoverflow.com/a/5639455/1684530 by cwolves
-var cookies;
-window.readCookie = function(name,c,C,i){
-  if(cookies) return cookies[name];
-  c = document.cookie.split('; ');
-  cookies = {};
-  for(i=c.length-1; i>=0; i--){
-    C = c[i].split('=');
-    cookies[C[0]] = unescape(C[1]);
-  }
-  return cookies[name];
-}
-
-window.writeCookie = function(name, val) {
-  document.cookie = name + "=" + val + '; expires=Thu, 31 Dec 2020 23:59:59 GMT; path=/';
-}
-
-// add thousand separators to given number.
-// http://stackoverflow.com/a/1990590/1684530 by Doug Neiner.
-window.digits = function(d) {
-  return (d+"").replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1 ");
-}
-
-// posts AJAX request to Ingress API.
-// action: last part of the actual URL, the rpc/dashboard. is
-//         added automatically
-// data: JSON data to post. method will be derived automatically from
-//       action, but may be overridden. Expects to be given Hash.
-//       Strings are not supported.
-// success: method to call on success. See jQuery API docs for avail-
-//          able arguments: http://api.jquery.com/jQuery.ajax/
-// error: see above. Additionally it is logged if the request failed.
-window.postAjax = function(action, data, success, error) {
-  data = JSON.stringify($.extend({method: 'dashboard.'+action}, data));
-  var remove = function(data, textStatus, jqXHR) { window.requests.remove(jqXHR); };
-  var errCnt = function(jqXHR) { window.failedRequestCount++; window.requests.remove(jqXHR); };
-  var result = $.ajax({
-    // use full URL to avoid issues depending on how people set their
-    // slash. See:
-    // https://github.com/breunigs/ingress-intel-total-conversion/issues/56
-    url: 'https://www.ingress.com/rpc/dashboard.'+action,
-    type: 'POST',
-    data: data,
-    dataType: 'json',
-    success: [remove, success],
-    error: error ? [errCnt, error] : errCnt,
-    contentType: 'application/json; charset=utf-8',
-    beforeSend: function(req) {
-      req.setRequestHeader('X-CSRFToken', readCookie('csrftoken'));
-    }
-  });
-  result.action = action;
-  return result;
-}
-
-// converts unix timestamps to HH:mm:ss format if it was today;
-// otherwise it returns YYYY-MM-DD
-window.unixTimeToString = function(time, full) {
-  if(!time) return null;
-  var d = new Date(typeof time === 'string' ? parseInt(time) : time);
-  var time = d.toLocaleTimeString();
-  var date = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-  if(typeof full !== 'undefined' && full) return date + ' ' + time;
-  if(d.toDateString() == new Date().toDateString())
-    return time;
-  else
-    return date;
-}
-
-window.unixTimeToHHmm = function(time) {
-  if(!time) return null;
-  var d = new Date(typeof time === 'string' ? parseInt(time) : time);
-  var h = '' + d.getHours(); h = h.length === 1 ? '0' + h : h;
-  var s = '' + d.getMinutes(); s = s.length === 1 ? '0' + s : s;
-  return  h + ':' + s;
-}
-
-window.rangeLinkClick = function() {
-  if(window.portalRangeIndicator)
-    window.map.fitBounds(window.portalRangeIndicator.getBounds());
-  if(window.isSmartphone)
-    window.smartphone.mapButton.click();
-}
-
-window.showPortalPosLinks = function(lat, lng) {
-  if (typeof android !== 'undefined' && android && android.intentPosLink) {
-    android.intentPosLink('https://maps.google.com/?q='+lat+','+lng);
-  } else {
-    var qrcode = '<div id="qrcode"></div>';
-    var script = '<script>$(\'#qrcode\').qrcode({text:\'GEO:'+lat+','+lng+'\'});</script>';
-    var gmaps = '<a href="https://maps.google.com/?q='+lat+','+lng+'">gmaps</a>';
-    var osm = '<a href="http://www.openstreetmap.org/?mlat='+lat+'&mlon='+lng+'&zoom=16">OSM</a>';
-    alert('<div style="text-align: center;">' + qrcode + script + gmaps + ' ' + osm + '</div>');
-  }
-}
-
-window.androidCopy = function(text) {
-  if(typeof android === 'undefined' || !android || !android.copy)
-    return true; // i.e. execute other actions
-  else
-    android.copy(text);
-  return false;
-}
-
-window.reportPortalIssue = function(info) {
-  var t = 'Redirecting you to a Google Help Page.\n\nThe text box contains all necessary information. Press CTRL+C to copy it.';
-  var d = window.portals[window.selectedPortal].options.details;
-
-  var info = 'Your Nick: ' + PLAYER.nickname + '        '
-    + 'Portal: ' + d.portalV2.descriptiveText.TITLE + '        '
-    + 'Location: ' + d.portalV2.descriptiveText.ADDRESS
-    +' (lat ' + (d.locationE6.latE6/1E6) + '; lng ' + (d.locationE6.lngE6/1E6) + ')';
-
-  //codename, approx addr, portalname
-  if(prompt(t, info) !== null)
-    location.href = 'https://support.google.com/ingress?hl=en&contact=1';
-}
-
-window._storedPaddedBounds = undefined;
-window.getPaddedBounds = function() {
-  if(_storedPaddedBounds === undefined) {
-    map.on('zoomstart zoomend movestart moveend', function() {
-      window._storedPaddedBounds = null;
-    });
-  }
-  if(renderLimitReached(0.7)) return window.map.getBounds();
-  if(window._storedPaddedBounds) return window._storedPaddedBounds;
-
-  var p = window.map.getBounds().pad(VIEWPORT_PAD_RATIO);
-  window._storedPaddedBounds = p;
-  return p;
-}
-
-// returns true if the render limit has been reached. The default ratio
-// is 1, which means it will tell you if there are more items drawn than
-// acceptable. A value of 0.9 will tell you if 90% of the amount of
-// acceptable entities have been drawn. You can use this to heuristi-
-// cally detect if the render limit will be hit.
-window.renderLimitReached = function(ratio) {
-  ratio = ratio || 1;
-  if(Object.keys(portals).length*ratio >= MAX_DRAWN_PORTALS) return true;
-  if(Object.keys(links).length*ratio >= MAX_DRAWN_LINKS) return true;
-  if(Object.keys(fields).length*ratio >= MAX_DRAWN_FIELDS) return true;
-  var param = { 'reached': false };
-  window.runHooks('checkRenderLimit', param);
-  return param.reached;
-}
-
-window.getMinPortalLevel = function() {
-  var z = map.getZoom();
-  if(z >= 16) return 0;
-  var conv = ['impossible', 8,7,7,6,6,5,5,4,4,3,3,2,2,1,1];
-  var minLevelByRenderLimit = portalRenderLimit.getMinLevel();
-  var result = minLevelByRenderLimit > conv[z]
-    ? minLevelByRenderLimit
-    : conv[z];
-  return result;
-}
-
-// returns number of pixels left to scroll down before reaching the
-// bottom. Works similar to the native scrollTop function.
-window.scrollBottom = function(elm) {
-  if(typeof elm === 'string') elm = $(elm);
-  return elm.get(0).scrollHeight - elm.innerHeight() - elm.scrollTop();
-}
-
-window.zoomToAndShowPortal = function(guid, latlng) {
-  map.setView(latlng, 17);
-  // if the data is available, render it immediately. Otherwise defer
-  // until it becomes available.
-  if(window.portals[guid])
-    renderPortalDetails(guid);
-  else
-    urlPortal = guid;
-}
-
-// translates guids to entity types
-window.getTypeByGuid = function(guid) {
-  // portals end in “.11” or “.12“, links in “.9", fields in “.b”
-  // .11 == portals
-  // .12 == portals
-  // .9  == links
-  // .b  == fields
-  // .c  == player/creator
-  // .d  == chat messages
-  //
-  // others, not used in web:
-  // .5  == resources (burster/resonator)
-  // .6  == XM
-  // .4  == media items, maybe all droppped resources (?)
-  // resonator guid is [portal guid]-resonator-[slot]
-  switch(guid.slice(33)) {
-    case '11':
-    case '12':
-      return TYPE_PORTAL;
-
-    case '9':
-      return TYPE_LINK;
-
-    case 'b':
-      return TYPE_FIELD;
-
-    case 'c':
-      return TYPE_PLAYER;
-
-    case 'd':
-      return TYPE_CHAT;
-
-    default:
-      if(guid.slice(-11,-2) == 'resonator') return TYPE_RESONATOR;
-      return TYPE_UNKNOWN;
-  }
-}
-
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
-}
-
-// http://stackoverflow.com/a/646643/1684530 by Bergi and CMS
-if (typeof String.prototype.startsWith !== 'function') {
-  String.prototype.startsWith = function (str){
-    return this.slice(0, str.length) === str;
-  };
-}
-
-window.prettyEnergy = function(nrg) {
-  return nrg> 1000 ? Math.round(nrg/1000) + ' k': nrg;
-}
-
-window.setPermaLink = function(elm) {
-  var c = map.getCenter();
-  var lat = Math.round(c.lat*1E6);
-  var lng = Math.round(c.lng*1E6);
-  var qry = 'latE6='+lat+'&lngE6='+lng+'&z=' + (map.getZoom()-1);
-  $(elm).attr('href',  'https://www.ingress.com/intel?' + qry);
+  return {center: new L.LatLng(0.0, 0.0), zoom: 1};
 }
 
-window.uniqueArray = function(arr) {
-  return $.grep(arr, function(v, i) {
-    return $.inArray(v, arr) === i;
-  });
-}
-
-window.genFourColumnTable = function(blocks) {
-  var t = $.map(blocks, function(detail, index) {
-    if(!detail) return '';
-    if(index % 2 === 0)
-      return '<tr><td>'+detail[1]+'</td><th>'+detail[0]+'</th>';
-    else
-      return '    <th>'+detail[0]+'</th><td>'+detail[1]+'</td></tr>';
-  }).join('');
-  if(t.length % 2 === 1) t + '<td></td><td></td></tr>';
-  return t;
-}
 
 
-// converts given text with newlines (\n) and tabs (\t) to a HTML
-// table automatically.
-window.convertTextToTableMagic = function(text) {
-  // check if it should be converted to a table
-  if(!text.match(/\t/)) return text.replace(/\n/g, '<br>');
 
-  var data = [];
-  var columnCount = 0;
+// ENTITY DETAILS TOOLS //////////////////////////////////////////////
+// hand any of these functions the details-hash of an entity (i.e.
+// portal, link, field) and they will return useful data.
 
-  // parse data
-  var rows = text.split('\n');
-  $.each(rows, function(i, row) {
-    data[i] = row.split('\t');
-    if(data[i].length > columnCount) columnCount = data[i].length;
-  });
 
-  // build the table
-  var table = '<table>';
-  $.each(data, function(i, row) {
-    table += '<tr>';
-    $.each(data[i], function(k, cell) {
-      var attributes = '';
-      if(k === 0 && data[i].length < columnCount) {
-        attributes = ' colspan="'+(columnCount - data[i].length + 1)+'"';
-      }
-      table += '<td'+attributes+'>'+cell+'</td>';
-    });
-    table += '</tr>';
-  });
-  table += '</table>';
-  return table;
+// given the entity detail data, returns the team the entity belongs
+// to. Uses TEAM_* enum values.
+window.getTeam = function(details) {
+  var team = TEAM_NONE;
+  if(details.controllingTeam.team === 'ALIENS') team = TEAM_ENL;
+  if(details.controllingTeam.team === 'RESISTANCE') team = TEAM_RES;
+  return team;
 }
-
-// Given 3 sets of points in an array[3]{lat, lng} returns the area of the triangle
-window.calcTriArea = function(p) {
-  return Math.abs((p[0].lat*(p[1].lng-p[2].lng)+p[1].lat*(p[2].lng-p[0].lng)+p[2].lat*(p[0].lng-p[1].lng))/2);
-}
-
-
 
 
 

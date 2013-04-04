@@ -1,12 +1,14 @@
 // ==UserScript==
 // @id             max-links@boombuler
-// @name           iitc: Max-Links-Plugin
-// @version        0.2
-// @updateURL      https://raw.github.com/breunigs/ingress-intel-total-conversion/gh-pages/plugins/max-links.user.js
-// @downloadURL    https://raw.github.com/breunigs/ingress-intel-total-conversion/gh-pages/plugins/max-links.user.js
-// @description    Calculates how to link the portals to create the maximum number of fields.
+// @name           IITC plugin: Max Links
+// @version        0.2.1.@@DATETIMEVERSION@@
+// @updateURL      @@UPDATEURL@@
+// @downloadURL    @@DOWNLOADURL@@
+// @description    [@@BUILDNAME@@-@@BUILDDATE@@] Calculates how to link the portals to create the maximum number of fields.
 // @include        https://www.ingress.com/intel*
+// @include        http://www.ingress.com/intel*
 // @match          https://www.ingress.com/intel*
+// @match          http://www.ingress.com/intel*
 // ==/UserScript==
 
 function wrapper() {
@@ -30,7 +32,7 @@ window.plugin.maxLinks.STROKE_STYLE = {
   clickable: false,
   smoothFactor: 10
 };
-window.plugin.maxLinks._delaunayScriptLocation = 'https://raw.github.com/breunigs/ingress-intel-total-conversion/gh-pages/dist/delaunay.js';
+window.plugin.maxLinks._delaunayScriptLocation = '@@RESOURCEURLBASE@@/delaunay.js';
 
 window.plugin.maxLinks.layer = null;
 
